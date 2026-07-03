@@ -1,0 +1,8 @@
+# Herramientas / editor
+.claude/
+.vscode/
+
+# Sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Portafolio de proyectos interactivo de Pablo Sanchez Abarca, Systems Engineer e IT Support Technician.">
+    <title>Pablo Sanchez Abarca | Portafolio de Proyectos</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="boot-screen" id="bootScreen">
+      <div class="boot-stars" aria-hidden="true"></div>
+      <section class="boot-panel" aria-labelledby="bootTitle">
+        <p class="boot-kicker" data-i18n="bootKicker">SYSTEMS ENGINEER</p>
+        <h1 id="bootTitle">Pablo Sanchez Abarca</h1>
+        <p class="boot-copy" data-i18n="bootCopy">Portafolio de Proyectos</p>
+        <div class="language-picker" aria-labelledby="languageQuestion">
+          <p class="language-question" id="languageQuestion" data-i18n="languageQuestion">Elige idioma</p>
+          <div class="language-options">
+            <button class="language-button is-active" type="button" data-lang="es" aria-pressed="true">Espa&ntilde;ol</button>
+            <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
+          </div>
+        </div>
+        <button class="start-button" id="startButton" type="button" data-i18n="startButton">INICIAR</button>
+      </section>
+    </div>
+
+    <div class="boot-screen intro-screen is-hidden" id="introScreen">
+      <div class="boot-stars" aria-hidden="true"></div>
+      <section class="boot-panel intro-panel" aria-labelledby="introTitle">
+        <p class="boot-kicker" id="introKicker">PORTAFOLIO INTERACTIVO</p>
+        <h1 id="introTitle">Portafolio de Pablo Sanchez Abarca</h1>
+        <p class="intro-lead" id="introLead"></p>
+        <ul class="intro-list" id="introList"></ul>
+        <button class="start-button" id="introStart" type="button">EXPLORAR</button>
+      </section>
+    </div>
+
+    <main class="game-shell" id="gameShell">
+      <canvas id="spaceCanvas" aria-label="Minijuego espacial del portafolio de Pablo Sanchez Abarca"></canvas>
+
+      <aside class="radar" aria-label="Planetas del portafolio">
+        <button type="button" data-planet="profile">Perfil</button>
+        <button type="button" data-planet="projects">Proyectos</button>
+        <button type="button" data-planet="experience">Experiencia</button>
+        <button type="button" data-planet="skills">Habilidades</button>
+        <button type="button" data-planet="education">Educacion</button>
+        <button type="button" data-planet="certs">Certs</button>
+        <button type="button" data-planet="contact">Contacto</button>
+      </aside>
+
+      <section class="info-panel" id="infoPanel" aria-live="polite" aria-hidden="true">
+        <button class="close-button" id="closePanel" type="button" aria-label="Cerrar">x</button>
+        <p class="panel-kicker" id="panelKicker"></p>
+        <h2 id="panelTitle"></h2>
+        <div class="panel-body" id="panelBody"></div>
+      </section>
+
+      <div class="touch-controls" aria-label="Controles tactiles">
+        <div class="dpad">
+          <button type="button" data-touch="up" aria-label="Arriba">&#9650;</button>
+          <button type="button" data-touch="left" aria-label="Izquierda">&#9664;</button>
+          <button type="button" data-touch="down" aria-label="Abajo">&#9660;</button>
+          <button type="button" data-touch="right" aria-label="Derecha">&#9654;</button>
+        </div>
+        <button class="interact-button" id="touchInteract" type="button" aria-label="Interactuar">E</button>
+        <button class="fire-button" id="touchFire" type="button" aria-label="Disparar">Z</button>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
