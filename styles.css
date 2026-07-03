@@ -713,19 +713,7 @@ button {
 
 @media (max-width: 760px) {
   .radar {
-    top: 96px;
-    left: 10px;
-    width: auto;
-    max-width: calc(100vw - 20px);
-    grid-template-columns: repeat(3, minmax(82px, 1fr));
-    gap: 6px;
-  }
-
-  .radar button {
-    min-height: 34px;
-    padding: 6px 8px;
-    text-align: center;
-    font-size: 12px;
+    display: none;
   }
 
   .info-panel {
@@ -788,10 +776,6 @@ button {
   .boot-copy,
   .panel-kicker {
     font-size: 11px;
-  }
-
-  .radar {
-    grid-template-columns: repeat(2, minmax(94px, 1fr));
   }
 
   .chat-config,
