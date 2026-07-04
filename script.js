@@ -91,8 +91,8 @@ const planets = [
     colorB: "#ff7a18",
     accent: "#ffd166",
     type: "sun",
-    title: "Sol de Proyectos",
-    kicker: "Hub central",
+    title: "Proyectos",
+    kicker: "",
     html: `
       <ul>
         <li>Chatbot profesional local conectado a Ollama.</li>
@@ -260,8 +260,8 @@ const translations = {
       },
       projects: {
         label: "Proyectos",
-        title: "Sol de Proyectos",
-        kicker: "Hub central",
+        title: "Proyectos",
+        kicker: "",
         html: `
           <div class="project-hub">
             <div class="project-hub-main">
@@ -445,8 +445,8 @@ const translations = {
       },
       projects: {
         label: "Projects",
-        title: "Project Sun",
-        kicker: "Central hub",
+        title: "Projects",
+        kicker: "",
         html: `
           <div class="project-hub">
             <div class="project-hub-main">
@@ -801,6 +801,7 @@ function renderInfoPanel(planet) {
   const isProjectHub = planet.id === "projects";
   infoPanel.classList.toggle("is-project-hub", isProjectHub);
   panelKicker.textContent = planet.kicker;
+  panelKicker.style.display = planet.kicker ? "" : "none";
   panelTitle.textContent = planet.title;
   panelBody.innerHTML = planet.html;
   if (isProjectHub) {
