@@ -276,7 +276,7 @@ const translations = {
                   <h3>Sitio romantico interactivo</h3>
                   <p>Sitio web interactivo romantico con sistema para enviar correos y una experiencia visual personalizada.</p>
                   <span>Web / Email / UX</span>
-                  <p><a class="panel-link" href="https://github.com/pablosanchez123/birthday-website-Alison" target="_blank" rel="noreferrer">Ver repositorio en GitHub</a></p>
+                  <p><a class="panel-link" href="https://pablosanchez123.github.io/birthday-website-Alison/" target="_blank" rel="noreferrer">Ver sitio en vivo</a></p>
                 </article>
                 <article class="project-card">
                   <h3>Sistema empresarial - En produccion, +10 users</h3>
@@ -461,7 +461,7 @@ const translations = {
                   <h3>Interactive romantic website</h3>
                   <p>Interactive romantic website with an email-sending system and a personalized visual experience.</p>
                   <span>Web / Email / UX</span>
-                  <p><a class="panel-link" href="https://github.com/pablosanchez123/birthday-website-Alison" target="_blank" rel="noreferrer">View repository on GitHub</a></p>
+                  <p><a class="panel-link" href="https://pablosanchez123.github.io/birthday-website-Alison/" target="_blank" rel="noreferrer">View live site</a></p>
                 </article>
                 <article class="project-card">
                   <h3>Business management system - In production, 10+ users</h3>
