@@ -705,19 +705,23 @@ button {
     display: none;
   }
 
+  /* fixed en vez de absolute: en movil 100vh incluye la zona detras de la
+     barra del navegador, y con absolute el panel quedaba bajo la barra fija */
   .info-panel {
+    position: fixed;
     right: 10px;
     left: 10px;
-    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
     width: auto;
-    max-height: 52vh;
+    max-height: 48vh;
     padding: 18px;
   }
 
   .info-panel.is-project-hub {
+    position: fixed;
     top: 10px;
     right: 10px;
-    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
     left: 10px;
     width: auto;
     height: auto;
@@ -740,6 +744,7 @@ button {
 
   .ai-chat {
     height: 100%;
+    grid-template-rows: auto minmax(120px, 1fr) auto auto;
   }
 
   /* iOS hace zoom automatico en inputs con fuente menor a 16px */
@@ -748,8 +753,9 @@ button {
   }
 
   .touch-controls {
+    position: fixed;
     display: flex;
-    bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-nav {
@@ -822,10 +828,6 @@ button {
   .boot-copy,
   .panel-kicker {
     font-size: 11px;
-  }
-
-  .chat-form {
-    grid-template-columns: 1fr;
   }
 
   .project-card {
