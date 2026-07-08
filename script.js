@@ -288,8 +288,8 @@ const translations = {
                 </article>
                 <article class="project-card">
                   <h3>Sistema empresarial - En produccion, +10 users</h3>
-                  <p>Gestion de empleados y registros empresariales como vacaciones y asistencia, con app desktop/web, backend en AWS y base SQL.</p>
-                  <span>React / Vite / Electron / FastAPI / AWS / SQL</span>
+                  <p>Gestion de empleados y registros empresariales como vacaciones y asistencia, con app desktop/web y base SQL. Migre el backend de AWS a infraestructura self-hosted (Cloudflare Tunnel, systemd, backups automatizados) sin downtime para los usuarios.</p>
+                  <span>React / Vite / Electron / FastAPI / PostgreSQL / Self-hosted / Cloudflare Tunnel</span>
                 </article>
                 <article class="project-card">
                   <h3>Dashboard de datos</h3>
@@ -473,8 +473,8 @@ const translations = {
                 </article>
                 <article class="project-card">
                   <h3>Business management system - In production, 10+ users</h3>
-                  <p>Employee management and company records such as vacations and attendance, with desktop/web app, AWS backend, and SQL database.</p>
-                  <span>React / Vite / Electron / FastAPI / AWS / SQL</span>
+                  <p>Employee management and company records such as vacations and attendance, with desktop/web app and SQL database. Migrated the backend from AWS to self-hosted infrastructure (Cloudflare Tunnel, systemd, automated backups) with zero downtime for users.</p>
+                  <span>React / Vite / Electron / FastAPI / PostgreSQL / Self-hosted / Cloudflare Tunnel</span>
                 </article>
                 <article class="project-card">
                   <h3>Data analysis dashboard</h3>
