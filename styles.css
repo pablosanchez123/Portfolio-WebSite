@@ -544,9 +544,17 @@ button {
 
 .chat-config {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px;
   min-width: 0;
+}
+
+.chat-usage {
+  margin: 6px 0 0;
+  color: var(--gold);
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
 }
 
 .chat-config label {
@@ -778,7 +786,6 @@ button {
     font-size: 11px;
   }
 
-  .chat-config,
   .chat-form {
     grid-template-columns: 1fr;
   }

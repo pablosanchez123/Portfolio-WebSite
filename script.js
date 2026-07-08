@@ -29,8 +29,7 @@ const interactionPadding = 120;
 const panelAutoClosePadding = 170;
 const playerMaxSpeed = 320;
 const ollamaDefaults = {
-  endpoint: "http://localhost:11434",
-  model: "llama3.2:3b"
+  endpoint: "https://api.apisis.net"
 };
 const world = { width: 4200, height: 3000 };
 const player = {
@@ -59,6 +58,8 @@ const projectChat = {
   messages: [],
   busy: false
 };
+
+let chatUsage = null;
 
 const planets = [
   {
@@ -239,10 +240,11 @@ const translations = {
     promptText: "E  INTERACTUAR",
     chat: {
       greeting: "Hola, soy el asistente local de Pablo. Preguntame sobre su experiencia, habilidades, estudios o proyectos.",
-      thinking: "Consultando Ollama...",
-      error: "No se pudo conectar con Ollama. Revisa que Ollama este corriendo, que el modelo exista y que el endpoint permita peticiones del navegador.",
+      thinking: "Consultando el servidor RAG...",
+      error: "No se pudo conectar con el servidor RAG. Revisa que el servidor este corriendo, que Ollama este activo y que el endpoint permita peticiones del navegador.",
       empty: "Escribe una pregunta primero.",
-      systemPrompt: "Eres el chatbot profesional de Pablo Sanchez Abarca. Responde en espanol, de forma clara y honesta. Usa solo el contexto profesional proporcionado. Si no sabes un dato, dilo y sugiere contactar a Pablo."
+      limitReached: "Alcanzaste el limite diario de preguntas. Intenta de nuevo manana.",
+      usageLabel: "Preguntas hoy: {used}/{limit}"
     },
     planets: {
       profile: {
@@ -308,14 +310,12 @@ const translations = {
             <section class="ai-chat" aria-label="Chatbot profesional local">
               <div class="chat-heading">
                 <h3>Chatbot AI local</h3>
-                <p>Modelo Ollama con contexto profesional de Pablo.</p>
+                <p>Servidor RAG conectado a Ollama con contexto profesional de Pablo.</p>
+                <p class="chat-usage" id="projectChatUsage"></p>
               </div>
               <div class="chat-config">
-                <label>Endpoint
-                  <input id="ollamaEndpoint" type="url" value="http://localhost:11434" autocomplete="off">
-                </label>
-                <label>Modelo
-                  <input id="ollamaModel" type="text" value="llama3.2:3b" autocomplete="off">
+                <label>Servidor RAG
+                  <input id="ollamaEndpoint" type="url" value="https://api.apisis.net" autocomplete="off">
                 </label>
               </div>
               <div class="chat-log" id="projectChatLog" aria-live="polite"></div>
@@ -424,10 +424,11 @@ const translations = {
     promptText: "E  INTERACT",
     chat: {
       greeting: "Hi, I am Pablo's local assistant. Ask me about his experience, skills, education, or projects.",
-      thinking: "Checking Ollama...",
-      error: "Could not connect to Ollama. Make sure Ollama is running, the model exists, and the endpoint allows browser requests.",
+      thinking: "Checking the RAG server...",
+      error: "Could not connect to the RAG server. Make sure the server is running, Ollama is active, and the endpoint allows browser requests.",
       empty: "Type a question first.",
-      systemPrompt: "You are Pablo Sanchez Abarca's professional chatbot. Answer in English with clear and honest responses. Use only the professional context provided. If you do not know something, say so and suggest contacting Pablo."
+      limitReached: "You reached today's question limit. Try again tomorrow.",
+      usageLabel: "Questions today: {used}/{limit}"
     },
     planets: {
       profile: {
@@ -493,14 +494,12 @@ const translations = {
             <section class="ai-chat" aria-label="Local professional chatbot">
               <div class="chat-heading">
                 <h3>Local AI chatbot</h3>
-                <p>Ollama model with Pablo's professional context.</p>
+                <p>RAG server connected to Ollama with Pablo's professional context.</p>
+                <p class="chat-usage" id="projectChatUsage"></p>
               </div>
               <div class="chat-config">
-                <label>Endpoint
-                  <input id="ollamaEndpoint" type="url" value="http://localhost:11434" autocomplete="off">
-                </label>
-                <label>Model
-                  <input id="ollamaModel" type="text" value="llama3.2:3b" autocomplete="off">
+                <label>RAG server
+                  <input id="ollamaEndpoint" type="url" value="https://api.apisis.net" autocomplete="off">
                 </label>
               </div>
               <div class="chat-log" id="projectChatLog" aria-live="polite"></div>
@@ -577,29 +576,6 @@ const translations = {
   }
 };
 
-const professionalContext = {
-  es: `
-Pablo Sanchez Abarca es Systems Engineer e IT Support Technician.
-Experiencia: IT Support Technician en Sistemas Integrados de Seguridad, 2022-2025.
-Responsabilidades: diagnostico y resolucion de problemas en computadoras, gestion y monitoreo de sistemas CCTV, resolucion de errores en aplicaciones de camaras.
-Habilidades: technical support, troubleshooting, SQL, database management, fundamentos de programacion orientada a objetos, aprendizaje rapido y trabajo en equipo.
-Educacion: Universidad Latina de Costa Rica, Computer Systems Engineering, actualmente matriculado, graduacion estimada 2026. Colegio Bilingue Jorge Volio Jimenez, High School Diploma, 2022.
-Certificaciones en progreso: AWS Cloud Practitioner y Google Project Management Certificate.
-Proyectos: chatbot profesional local conectado a Ollama con contexto profesional; sitio web interactivo romantico con sistema para enviar correos; sistema empresarial actualmente en produccion y utilizado por +10 users para gestion de empleados y registros de empresa como vacaciones y asistencia usando React, Vite, Electron, backend FastAPI en una VM de AWS, base de datos SQL en la misma VM, planeamiento en GitHub Projects y branching en GitHub; dashboard de analisis de datos integrado en la misma aplicacion; agente de marketing automatizado en VM exportable a maquina local con Ollama y Hermes Agent, capaz de estudiar mercado, generar publicaciones y programarlas usando APIs externas de imagen y video, controlado desde una pagina web conectada a la maquina host; agente de IA automatizado que programa, orquestado por Hermes Agent hasta completar objetivos; herramienta con interfaz para pruebas controladas y autorizadas de fuerza bruta en laboratorio.
-Contacto: pablo3020100@gmail.com, telefono (+506) 8729-6474, GitHub github.com/pablosanchez123.
-  `.trim(),
-  en: `
-Pablo Sanchez Abarca is a Systems Engineer and IT Support Technician.
-Experience: IT Support Technician at Sistemas Integrados de Seguridad, 2022-2025.
-Responsibilities: diagnosing and solving computer issues, managing and monitoring CCTV systems, and resolving errors in camera applications.
-Skills: technical support, troubleshooting, SQL, database management, object-oriented programming fundamentals, fast learning, and teamwork.
-Education: Universidad Latina de Costa Rica, Computer Systems Engineering, currently enrolled, expected graduation 2026. Colegio Bilingue Jorge Volio Jimenez, High School Diploma, 2022.
-Certifications in progress: AWS Cloud Practitioner and Google Project Management Certificate.
-Projects: local professional chatbot connected to Ollama with professional context; interactive romantic website with an email-sending system; business employee and company-record management system currently in production and used by 10+ users for vacations and attendance using React, Vite, Electron, FastAPI backend on an AWS VM, SQL database on the same VM, GitHub Projects planning, and GitHub branching; data analysis dashboard integrated into the same application; automated marketing agent in an exportable VM/local setup with Ollama and Hermes Agent, able to research markets, generate posts, and schedule them through external image and video APIs, controlled from a web page connected to the host machine; automated AI coding agent orchestrated by Hermes Agent until objectives are completed; interface-based tool for controlled and authorized brute-force testing in a lab.
-Contact: pablo3020100@gmail.com, phone (+506) 8729-6474, GitHub github.com/pablosanchez123.
-  `.trim()
-};
-
 const spawn = { x: -1150, y: -620 };
 player.x = spawn.x;
 player.y = spawn.y;
@@ -663,18 +639,40 @@ function setStoredOllamaSetting(key, value) {
 
 function getOllamaEndpoint() {
   const input = document.getElementById("ollamaEndpoint");
-  return (input?.value || getStoredOllamaSetting("ollamaEndpoint", ollamaDefaults.endpoint)).replace(/\/+$/, "");
-}
-
-function getOllamaModel() {
-  const input = document.getElementById("ollamaModel");
-  return (input?.value || getStoredOllamaSetting("ollamaModel", ollamaDefaults.model)).trim();
+  return (input?.value || getStoredOllamaSetting("portfolioRagEndpoint", ollamaDefaults.endpoint)).replace(/\/+$/, "");
 }
 
 function setChatStatus(message = "") {
   const status = document.getElementById("projectChatStatus");
   if (status) {
     status.textContent = message;
+  }
+}
+
+function renderChatUsage() {
+  const label = document.getElementById("projectChatUsage");
+  if (!label) {
+    return;
+  }
+  if (!chatUsage) {
+    label.textContent = "";
+    return;
+  }
+  label.textContent = getCopy().chat.usageLabel
+    .replace("{used}", chatUsage.used)
+    .replace("{limit}", chatUsage.limit);
+}
+
+async function refreshChatUsage() {
+  try {
+    const response = await fetch(`${getOllamaEndpoint()}/api/portfolio-chat/usage`);
+    if (!response.ok) {
+      return;
+    }
+    chatUsage = await response.json();
+    renderChatUsage();
+  } catch (error) {
+    // Sin conexion con el servidor: se deja el contador como estaba.
   }
 }
 
@@ -710,16 +708,12 @@ function setupProjectCards() {
 function renderProjectChatMessages() {
   const log = document.getElementById("projectChatLog");
   const endpointInput = document.getElementById("ollamaEndpoint");
-  const modelInput = document.getElementById("ollamaModel");
   if (!log) {
     return;
   }
 
   if (endpointInput) {
-    endpointInput.value = getStoredOllamaSetting("ollamaEndpoint", ollamaDefaults.endpoint);
-  }
-  if (modelInput) {
-    modelInput.value = getStoredOllamaSetting("ollamaModel", ollamaDefaults.model);
+    endpointInput.value = getStoredOllamaSetting("portfolioRagEndpoint", ollamaDefaults.endpoint);
   }
 
   log.replaceChildren();
@@ -735,20 +729,14 @@ function renderProjectChatMessages() {
   });
 
   log.scrollTop = log.scrollHeight;
-}
-
-function getChatSystemPrompt() {
-  const copy = getCopy();
-  return `${copy.chat.systemPrompt}\n\nContexto profesional / Professional context:\n${professionalContext[state.lang] || professionalContext.es}`;
+  renderChatUsage();
 }
 
 async function sendProjectChatMessage(question) {
   const copy = getCopy();
   const endpoint = getOllamaEndpoint();
-  const model = getOllamaModel();
 
-  setStoredOllamaSetting("ollamaEndpoint", endpoint);
-  setStoredOllamaSetting("ollamaModel", model);
+  setStoredOllamaSetting("portfolioRagEndpoint", endpoint);
 
   projectChat.messages.push({ role: "user", content: question });
   projectChat.busy = true;
@@ -756,30 +744,34 @@ async function sendProjectChatMessage(question) {
   setChatStatus(copy.chat.thinking);
 
   try {
-    const response = await fetch(`${endpoint}/api/chat`, {
+    const response = await fetch(`${endpoint}/api/portfolio-chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model,
-        stream: false,
-        messages: [
-          { role: "system", content: getChatSystemPrompt() },
-          ...projectChat.messages.slice(-10)
-        ],
-        options: {
-          temperature: 0.25
-        }
+        prompt: question,
+        lang: state.lang,
+        history: projectChat.messages.slice(-10)
       })
     });
 
+    const data = await response.json().catch(() => null);
+
     if (!response.ok) {
-      throw new Error(`Ollama responded with ${response.status}`);
+      if (data?.detail?.usage) {
+        chatUsage = data.detail.usage;
+      }
+      const error = new Error(`RAG server responded with ${response.status}`);
+      error.friendlyMessage = response.status === 429 ? copy.chat.limitReached : copy.chat.error;
+      throw error;
     }
 
-    const data = await response.json();
-    const answer = data?.message?.content?.trim() || data?.response?.trim();
+    if (data?.usage) {
+      chatUsage = data.usage;
+    }
+
+    const answer = data?.answer?.trim() || data?.message?.content?.trim() || data?.response?.trim();
     projectChat.messages.push({
       role: "assistant",
       content: answer || copy.chat.error
@@ -788,7 +780,7 @@ async function sendProjectChatMessage(question) {
   } catch (error) {
     projectChat.messages.push({
       role: "assistant",
-      content: copy.chat.error
+      content: error.friendlyMessage || copy.chat.error
     });
     setChatStatus("");
   } finally {
@@ -807,6 +799,9 @@ function renderInfoPanel(planet) {
   if (isProjectHub) {
     setupProjectCards();
     renderProjectChatMessages();
+    if (!chatUsage) {
+      refreshChatUsage();
+    }
   }
 }
 
