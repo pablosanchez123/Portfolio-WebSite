@@ -238,7 +238,7 @@ const translations = {
     promptText: "E  INTERACTUAR",
     chat: {
       greeting: "Hola, soy el asistente local de Pablo. Preguntame sobre su experiencia, habilidades, estudios o proyectos.",
-      thinking: "Consultando el servidor RAG...",
+      thinkingWords: ["Consultando a Home Lab de Pablo", "Procesando respuesta", "Consultando", "Procesando"],
       error: "No se pudo conectar con el servidor RAG. Revisa que el servidor este corriendo, que Ollama este activo y que el endpoint permita peticiones del navegador.",
       empty: "Escribe una pregunta primero.",
       limitReached: "Alcanzaste el limite diario de preguntas. Intenta de nuevo manana.",
@@ -417,7 +417,7 @@ const translations = {
     promptText: "E  INTERACT",
     chat: {
       greeting: "Hi, I am Pablo's local assistant. Ask me about his experience, skills, education, or projects.",
-      thinking: "Checking the RAG server...",
+      thinkingWords: ["Consulting Pablo's Home Lab", "Processing response", "Consulting", "Processing"],
       error: "Could not connect to the RAG server. Make sure the server is running, Ollama is active, and the endpoint allows browser requests.",
       empty: "Type a question first.",
       limitReached: "You reached today's question limit. Try again tomorrow.",
@@ -616,6 +616,26 @@ function setChatStatus(message = "") {
   }
 }
 
+const THINKING_SPINNER_FRAMES = ["✳", "✶", "✷", "✵"];
+
+function startThinkingIndicator() {
+  const words = getCopy().chat.thinkingWords;
+  const word = words[Math.floor(Math.random() * words.length)];
+  const startedAt = Date.now();
+  let frame = 0;
+
+  const tick = () => {
+    const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+    const spinner = THINKING_SPINNER_FRAMES[frame % THINKING_SPINNER_FRAMES.length];
+    frame += 1;
+    setChatStatus(`${spinner} ${word}… (${elapsed}s)`);
+  };
+
+  tick();
+  const timer = window.setInterval(tick, 400);
+  return () => window.clearInterval(timer);
+}
+
 function renderChatUsage() {
   const label = document.getElementById("projectChatUsage");
   if (!label) {
@@ -700,7 +720,7 @@ async function sendProjectChatMessage(question) {
   projectChat.messages.push({ role: "user", content: question });
   projectChat.busy = true;
   renderProjectChatMessages();
-  setChatStatus(copy.chat.thinking);
+  const stopThinking = startThinkingIndicator();
 
   try {
     const response = await fetch(`${RAG_ENDPOINT}/api/portfolio-chat`, {
@@ -743,6 +763,7 @@ async function sendProjectChatMessage(question) {
     });
     setChatStatus("");
   } finally {
+    stopThinking();
     projectChat.busy = false;
     renderProjectChatMessages();
   }
