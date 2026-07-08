@@ -28,9 +28,7 @@ const touchFire = document.getElementById("touchFire");
 const interactionPadding = 120;
 const panelAutoClosePadding = 170;
 const playerMaxSpeed = 320;
-const ollamaDefaults = {
-  endpoint: "https://api.apisis.net"
-};
+const RAG_ENDPOINT = "https://api.apisis.net";
 const world = { width: 4200, height: 3000 };
 const player = {
   x: 0,
@@ -313,11 +311,6 @@ const translations = {
                 <p>Servidor RAG conectado a Ollama con contexto profesional de Pablo.</p>
                 <p class="chat-usage" id="projectChatUsage"></p>
               </div>
-              <div class="chat-config">
-                <label>Servidor RAG
-                  <input id="ollamaEndpoint" type="url" value="https://api.apisis.net" autocomplete="off">
-                </label>
-              </div>
               <div class="chat-log" id="projectChatLog" aria-live="polite"></div>
               <form class="chat-form" id="projectChatForm">
                 <input id="projectChatInput" type="text" placeholder="Pregunta sobre Pablo..." autocomplete="off">
@@ -497,11 +490,6 @@ const translations = {
                 <p>RAG server connected to Ollama with Pablo's professional context.</p>
                 <p class="chat-usage" id="projectChatUsage"></p>
               </div>
-              <div class="chat-config">
-                <label>RAG server
-                  <input id="ollamaEndpoint" type="url" value="https://api.apisis.net" autocomplete="off">
-                </label>
-              </div>
               <div class="chat-log" id="projectChatLog" aria-live="polite"></div>
               <form class="chat-form" id="projectChatForm">
                 <input id="projectChatInput" type="text" placeholder="Ask about Pablo..." autocomplete="off">
@@ -621,27 +609,6 @@ function getCopy() {
   return translations[state.lang] || translations.es;
 }
 
-function getStoredOllamaSetting(key, fallback) {
-  try {
-    return window.localStorage.getItem(key) || fallback;
-  } catch (error) {
-    return fallback;
-  }
-}
-
-function setStoredOllamaSetting(key, value) {
-  try {
-    window.localStorage.setItem(key, value);
-  } catch (error) {
-    // Local storage can be unavailable when the page is opened with strict browser settings.
-  }
-}
-
-function getOllamaEndpoint() {
-  const input = document.getElementById("ollamaEndpoint");
-  return (input?.value || getStoredOllamaSetting("portfolioRagEndpoint", ollamaDefaults.endpoint)).replace(/\/+$/, "");
-}
-
 function setChatStatus(message = "") {
   const status = document.getElementById("projectChatStatus");
   if (status) {
@@ -665,7 +632,7 @@ function renderChatUsage() {
 
 async function refreshChatUsage() {
   try {
-    const response = await fetch(`${getOllamaEndpoint()}/api/portfolio-chat/usage`);
+    const response = await fetch(`${RAG_ENDPOINT}/api/portfolio-chat/usage`);
     if (!response.ok) {
       return;
     }
@@ -707,13 +674,8 @@ function setupProjectCards() {
 
 function renderProjectChatMessages() {
   const log = document.getElementById("projectChatLog");
-  const endpointInput = document.getElementById("ollamaEndpoint");
   if (!log) {
     return;
-  }
-
-  if (endpointInput) {
-    endpointInput.value = getStoredOllamaSetting("portfolioRagEndpoint", ollamaDefaults.endpoint);
   }
 
   log.replaceChildren();
@@ -734,9 +696,6 @@ function renderProjectChatMessages() {
 
 async function sendProjectChatMessage(question) {
   const copy = getCopy();
-  const endpoint = getOllamaEndpoint();
-
-  setStoredOllamaSetting("portfolioRagEndpoint", endpoint);
 
   projectChat.messages.push({ role: "user", content: question });
   projectChat.busy = true;
@@ -744,7 +703,7 @@ async function sendProjectChatMessage(question) {
   setChatStatus(copy.chat.thinking);
 
   try {
-    const response = await fetch(`${endpoint}/api/portfolio-chat`, {
+    const response = await fetch(`${RAG_ENDPOINT}/api/portfolio-chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

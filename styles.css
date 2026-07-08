@@ -534,19 +534,12 @@ button {
 
 .ai-chat {
   display: grid;
-  grid-template-rows: auto auto minmax(190px, 1fr) auto auto;
+  grid-template-rows: auto minmax(190px, 1fr) auto auto;
   gap: 10px;
   height: 100%;
   min-height: 0;
   padding: 14px;
   overflow: hidden;
-}
-
-.chat-config {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  min-width: 0;
 }
 
 .chat-usage {
@@ -557,17 +550,6 @@ button {
   text-transform: uppercase;
 }
 
-.chat-config label {
-  display: grid;
-  gap: 5px;
-  min-width: 0;
-  color: var(--cyan);
-  font-family: "Courier New", Consolas, monospace;
-  font-size: 11px;
-  text-transform: uppercase;
-}
-
-.chat-config input,
 .chat-form input {
   width: 100%;
   min-width: 0;
@@ -576,11 +558,6 @@ button {
   color: var(--text);
   background: rgba(0, 0, 0, 0.48);
   font: inherit;
-}
-
-.chat-config input {
-  min-height: 32px;
-  padding: 6px 8px;
 }
 
 .chat-log {
@@ -755,10 +732,6 @@ button {
   .project-hub {
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr) 380px;
-  }
-
-  .chat-config {
-    grid-template-columns: 1fr;
   }
 
   .ai-chat {
