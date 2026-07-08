@@ -20,6 +20,8 @@ const panelBody = document.getElementById("panelBody");
 const metaDescription = document.querySelector("meta[name='description']");
 const radar = document.querySelector(".radar");
 const radarButtons = [...document.querySelectorAll(".radar button")];
+const mobileNav = document.getElementById("mobileNav");
+const mobileNavButtons = [...document.querySelectorAll(".mobile-nav button")];
 const touchControls = document.querySelector(".touch-controls");
 const touchButtons = [...document.querySelectorAll("[data-touch]")];
 const touchInteract = document.getElementById("touchInteract");
@@ -221,6 +223,12 @@ const translations = {
         { keys: "Z", text: "Es interactivo: dispara laseres con la tecla Z para destruir los asteroides." },
         { keys: "Radar", text: "Usa el radar de la izquierda para viajar directo a cualquier seccion." }
       ],
+      itemsMobile: [
+        { keys: "Planetas", text: "Cada planeta es una seccion de informacion. Tocalo en pantalla o acercate y toca E para abrirlo." },
+        { keys: "Cruceta", text: "Muevete por el espacio con la cruceta tactil." },
+        { keys: "Z", text: "Es interactivo: dispara laseres con el boton Z para destruir los asteroides." },
+        { keys: "Menu", text: "Usa la barra de abajo para viajar directo a cualquier seccion." }
+      ],
       button: "EXPLORAR"
     },
     canvasLabel: "Minijuego espacial del portafolio de Pablo Sanchez Abarca",
@@ -399,6 +407,12 @@ const translations = {
         { keys: "WASD / Arrows", text: "Move through space with the WASD keys or the keyboard arrows." },
         { keys: "Z", text: "It is interactive: fire lasers with the Z key to destroy the asteroids." },
         { keys: "Radar", text: "Use the radar on the left to travel straight to any section." }
+      ],
+      itemsMobile: [
+        { keys: "Planets", text: "Each planet is an information section. Tap it on screen or get close and tap E to open it." },
+        { keys: "D-Pad", text: "Move through space with the touch pad." },
+        { keys: "Z", text: "It is interactive: fire lasers with the Z button to destroy the asteroids." },
+        { keys: "Menu", text: "Use the bottom bar to travel straight to any section." }
       ],
       button: "EXPLORE"
     },
@@ -841,6 +855,7 @@ function applyLanguage(lang) {
   metaDescription.setAttribute("content", copy.metaDescription);
   canvas.setAttribute("aria-label", copy.canvasLabel);
   radar.setAttribute("aria-label", copy.radarLabel);
+  mobileNav.setAttribute("aria-label", copy.radarLabel);
   closePanel.setAttribute("aria-label", copy.closeLabel);
   touchControls.setAttribute("aria-label", copy.touchControlsLabel);
   touchInteract.setAttribute("aria-label", copy.touchLabels.interact);
@@ -856,7 +871,9 @@ function applyLanguage(lang) {
   introLead.textContent = copy.intro.lead;
   introStart.textContent = copy.intro.button;
   introList.replaceChildren();
-  copy.intro.items.forEach((item) => {
+  const isMobileLayout = window.matchMedia("(max-width: 760px)").matches;
+  const introItems = isMobileLayout && copy.intro.itemsMobile ? copy.intro.itemsMobile : copy.intro.items;
+  introItems.forEach((item) => {
     const li = document.createElement("li");
     const badge = document.createElement("span");
     badge.className = "intro-key";
@@ -880,6 +897,13 @@ function applyLanguage(lang) {
     const button = radarButtons.find((item) => item.dataset.planet === planet.id);
     if (button) {
       button.textContent = planet.label;
+    }
+    const mobileButton = mobileNavButtons.find((item) => item.dataset.planet === planet.id);
+    if (mobileButton) {
+      const mobileLabel = mobileButton.querySelector(".mnav-label");
+      if (mobileLabel) {
+        mobileLabel.textContent = planet.label;
+      }
     }
   });
 
@@ -1613,6 +1637,9 @@ function updateNearest() {
   radarButtons.forEach((button) => {
     button.classList.toggle("is-active", nearest && button.dataset.planet === nearest.id);
   });
+  mobileNavButtons.forEach((button) => {
+    button.classList.toggle("is-active", nearest && button.dataset.planet === nearest.id);
+  });
 
   if (state.openPlanetId) {
     const openPlanet = planets.find((planet) => planet.id === state.openPlanetId);
@@ -1786,6 +1813,18 @@ radarButtons.forEach((button) => {
   button.addEventListener("click", () => {
     startGame();
     flyToPlanet(button.dataset.planet);
+  });
+});
+
+mobileNavButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const id = button.dataset.planet;
+    if (state.started && state.openPlanetId === id) {
+      closeInfoPanel();
+      return;
+    }
+    startGame();
+    flyToPlanet(id);
   });
 });
 
