@@ -737,14 +737,31 @@ button {
     font-size: 23px;
   }
 
+  /* Filas proporcionales en vez de chat fijo de 380px: en pantallas bajas
+     el chat se desbordaba y el formulario quedaba fuera de la vista */
   .project-hub {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) 380px;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1.4fr);
   }
 
   .ai-chat {
     height: 100%;
-    grid-template-rows: auto minmax(120px, 1fr) auto auto;
+    grid-template-rows: auto minmax(80px, 1fr) auto auto;
+    overflow-y: auto;
+  }
+
+  /* Se oculta la descripcion del chat para dar espacio al historial;
+     el contador de preguntas se mantiene visible */
+  .chat-heading p {
+    display: none;
+  }
+
+  .chat-heading p.chat-usage {
+    display: block;
+  }
+
+  .chat-form {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   /* iOS hace zoom automatico en inputs con fuente menor a 16px */
