@@ -983,14 +983,10 @@ a:focus-visible .roll .roll-b span {
   justify-content: center;
   overflow: hidden;
   padding: 110px 7vw 90px;
-}
-
-.panels-canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
+  background:
+    radial-gradient(52% 45% at 20% 20%, rgba(128, 0, 255, 0.22), transparent 68%),
+    radial-gradient(40% 38% at 82% 78%, rgba(128, 0, 255, 0.12), transparent 70%),
+    #000000;
 }
 
 .hero-content {

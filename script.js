@@ -1494,19 +1494,17 @@ function fillList(id, items) {
 
 // ==================================================================
 // Landing: motor de animacion por frame.
-// - Hero Color Panels (cult-ui): paneles de color inclinados en canvas.
 // - Character/word reveal (skiper31): scrub con el scroll.
 // - StickyCard_001 (skiper16): escala de tarjetas apiladas.
 // - LinePath (skiper19): el trazo se dibuja con el progreso.
-// - SpringMouseFollow (skiper61): punto que persigue el cursor.
+// - SpringMouseFollow (skiper61): punto que persigue el cursor (solo
+//   la escala usa resorte; la posicion sigue el cursor 1:1, sin delay).
 // ==================================================================
-const panelsCanvas = document.getElementById("panelsCanvas");
-const panelsCtx = panelsCanvas ? panelsCanvas.getContext("2d") : null;
 const cursorDot = document.getElementById("cursorDot");
 const heroSection = document.getElementById("l-hero");
 
 const cursorSpring = {
-  x: 0, y: 0, vx: 0, vy: 0,
+  x: -100, y: -100,
   targetX: -100, targetY: -100,
   scale: 1, targetScale: 1,
   opacity: 0, targetOpacity: 0
@@ -1524,51 +1522,6 @@ landing.addEventListener("pointerover", (event) => {
   const interactive = event.target.closest("a, button");
   cursorSpring.targetScale = interactive ? 2.4 : 1;
 });
-
-const PANEL_COLORS = ["#8000ff", "#b366ff", "#4d0099", "#9933ff", "#6600cc", "#a64dff", "#5900b3"];
-
-function resizePanelsCanvas() {
-  if (!panelsCanvas) {
-    return;
-  }
-  panelsCanvas.width = Math.max(360, Math.floor(panelsCanvas.clientWidth / 2));
-  panelsCanvas.height = Math.max(240, Math.floor(panelsCanvas.clientHeight / 2));
-}
-
-function drawColorPanels(time) {
-  if (!panelsCtx) {
-    return;
-  }
-  const w = panelsCanvas.width;
-  const h = panelsCanvas.height;
-  panelsCtx.setTransform(1, 0, 0, 1, 0, 0);
-  panelsCtx.clearRect(0, 0, w, h);
-  panelsCtx.globalCompositeOperation = "lighter";
-  panelsCtx.filter = "blur(14px)";
-
-  const count = PANEL_COLORS.length;
-  const t = time * 0.00022;
-  for (let i = 0; i < count; i += 1) {
-    const wobble = Math.sin(t * 2.4 + i * 1.7) * 0.045;
-    const cx = ((i + 0.5) / count + wobble) * w;
-    const angle = 0.52 + Math.sin(t * 1.6 + i * 0.9) * 0.1;
-    const panelWidth = (w / count) * (0.62 + 0.18 * Math.sin(t * 3 + i * 2.3));
-
-    panelsCtx.save();
-    panelsCtx.translate(cx, h * 0.5);
-    panelsCtx.rotate(angle);
-    const grad = panelsCtx.createLinearGradient(0, -h, 0, h);
-    grad.addColorStop(0, "transparent");
-    grad.addColorStop(0.35, PANEL_COLORS[i] + "cc");
-    grad.addColorStop(0.65, PANEL_COLORS[i] + "88");
-    grad.addColorStop(1, "transparent");
-    panelsCtx.fillStyle = grad;
-    panelsCtx.fillRect(-panelWidth / 2, -h, panelWidth, h * 2);
-    panelsCtx.restore();
-  }
-  panelsCtx.filter = "none";
-  panelsCtx.globalCompositeOperation = "source-over";
-}
 
 function viewProgress(rect, vh) {
   // progreso 0-1 mientras la seccion cruza la ventana (start end -> end start)
@@ -1631,39 +1584,22 @@ function landingFxLoop(time) {
   const dt = Math.min(0.05, (time - lastFxTime) / 1000 || 0.016);
   lastFxTime = time;
 
-  if (heroSection && panelsCtx && !reducedMotion.matches) {
-    const heroRect = heroSection.getBoundingClientRect();
-    if (heroRect.bottom > 0) {
-      drawColorPanels(time);
-    }
-  }
-
   updateScrollFx();
 
   if (finePointer.matches && cursorDot && !reducedMotion.matches) {
-    // resorte estilo skiper61 (mass 0.1 / damping 10 / stiffness 131)
-    const k = 131;
-    const damping = 10;
-    cursorSpring.vx += ((cursorSpring.targetX - cursorSpring.x) * k - cursorSpring.vx * damping) * dt;
-    cursorSpring.vy += ((cursorSpring.targetY - cursorSpring.y) * k - cursorSpring.vy * damping) * dt;
-    cursorSpring.x += cursorSpring.vx * dt;
-    cursorSpring.y += cursorSpring.vy * dt;
-    cursorSpring.scale += (cursorSpring.targetScale - cursorSpring.scale) * Math.min(1, dt * 12);
-    cursorSpring.opacity += (cursorSpring.targetOpacity - cursorSpring.opacity) * Math.min(1, dt * 10);
+    // la posicion sigue el cursor sin delay; solo la escala usa resorte
+    cursorSpring.x = cursorSpring.targetX;
+    cursorSpring.y = cursorSpring.targetY;
+    cursorSpring.scale += (cursorSpring.targetScale - cursorSpring.scale) * Math.min(1, dt * 16);
+    cursorSpring.opacity += (cursorSpring.targetOpacity - cursorSpring.opacity) * Math.min(1, dt * 14);
     cursorDot.style.transform = `translate(${cursorSpring.x - 9}px, ${cursorSpring.y - 9}px) scale(${cursorSpring.scale.toFixed(3)})`;
     cursorDot.style.opacity = cursorSpring.opacity.toFixed(3);
   }
 }
 
 function initLandingFx() {
-  resizePanelsCanvas();
-  if (reducedMotion.matches && panelsCtx) {
-    drawColorPanels(1200);
-  }
   requestAnimationFrame(landingFxLoop);
 }
-
-window.addEventListener("resize", resizePanelsCanvas);
 
 function resizeCanvas() {
   state.width = window.innerWidth;
