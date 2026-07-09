@@ -1,16 +1,11 @@
 const canvas = document.getElementById("spaceCanvas");
 const ctx = canvas.getContext("2d");
-const bootScreen = document.getElementById("bootScreen");
-const startButton = document.getElementById("startButton");
-const introScreen = document.getElementById("introScreen");
-const introStart = document.getElementById("introStart");
-const introKicker = document.getElementById("introKicker");
-const introTitle = document.getElementById("introTitle");
-const introLead = document.getElementById("introLead");
-const introList = document.getElementById("introList");
-const bootKicker = document.querySelector("[data-i18n='bootKicker']");
-const bootCopy = document.querySelector("[data-i18n='bootCopy']");
-const languageQuestion = document.getElementById("languageQuestion");
+const landing = document.getElementById("landing");
+const landingEnterGame = document.getElementById("landingEnterGame");
+const heroCtaGame = document.getElementById("heroCtaGame");
+const scrollButtons = [...document.querySelectorAll("[data-scroll]")];
+const landingNavLinks = [...document.querySelectorAll(".landing-nav-links [data-scroll]")];
+const landingSections = [...document.querySelectorAll(".landing-main > section")];
 const languageButtons = [...document.querySelectorAll("[data-lang]")];
 const infoPanel = document.getElementById("infoPanel");
 const closePanel = document.getElementById("closePanel");
@@ -209,27 +204,139 @@ const translations = {
   es: {
     pageTitle: "Pablo Sanchez Abarca | Portafolio de Proyectos",
     metaDescription: "Portafolio de proyectos interactivo de Pablo Sanchez Abarca, Systems Engineer e IT Support Technician.",
-    bootKicker: "SYSTEMS ENGINEER",
-    bootCopy: "Portafolio de Proyectos",
-    languageQuestion: "Elige idioma",
-    startButton: "INICIAR",
-    intro: {
-      kicker: "PORTAFOLIO INTERACTIVO",
-      title: "Portafolio de Pablo Sanchez Abarca",
-      lead: "Bienvenido. Este es mi portafolio convertido en un pequeno juego espacial. Explora libremente:",
-      items: [
-        { keys: "Planetas", text: "Cada planeta es una seccion de informacion (perfil, experiencia, proyectos...). Acercate y presiona E para abrirla." },
-        { keys: "WASD / Flechas", text: "Muevete por el espacio con las teclas WASD o las flechas del teclado." },
-        { keys: "Z", text: "Es interactivo: dispara laseres con la tecla Z para destruir los asteroides." },
-        { keys: "Radar", text: "Usa el radar de la izquierda para viajar directo a cualquier seccion." }
-      ],
-      itemsMobile: [
-        { keys: "Planetas", text: "Cada planeta es una seccion de informacion. Tocalo en pantalla o acercate y toca E para abrirlo." },
-        { keys: "Cruceta", text: "Muevete por el espacio con la cruceta tactil." },
-        { keys: "Z", text: "Es interactivo: dispara laseres con el boton Z para destruir los asteroides." },
-        { keys: "Menu", text: "Usa la barra de abajo para viajar directo a cualquier seccion." }
-      ],
-      button: "EXPLORAR"
+    landing: {
+      nav: {
+        profile: "Perfil",
+        projects: "Proyectos",
+        experience: "Experiencia",
+        skills: "Habilidades",
+        education: "Educacion",
+        certs: "Certs",
+        contact: "Contacto"
+      },
+      hero: {
+        kicker: "SYSTEMS ENGINEER · COSTA RICA",
+        title: "Pablo Sanchez Abarca",
+        typeBase: "Construyo y doy soporte a ",
+        typePhrases: [
+          "sistemas que no se caen.",
+          "apps que ya estan en produccion.",
+          "agentes de IA con Ollama.",
+          "dashboards con datos reales."
+        ],
+        ctaProjects: "Ver proyectos",
+        ctaGame: "Entrar al juego",
+        badges: ["React", "FastAPI", "PostgreSQL", "Ollama", "Electron", "AWS"],
+        scrollHint: "scroll"
+      },
+      sideCta: "Entrar al juego",
+      sideNote: "el portafolio jugable",
+      profile: {
+        kicker: "Perfil",
+        title: "Soporte · Sistemas · IA",
+        body: "Brindo soporte IT, resuelvo problemas tecnicos y administro sistemas. Estoy creciendo hacia project management con machine learning e inteligencia artificial.",
+        stats: [
+          { value: 10, prefix: "+", label: "usuarios en produccion" },
+          { value: 7, prefix: "", label: "proyectos" },
+          { value: 3, prefix: "", label: "anos de experiencia" },
+          { value: 2026, prefix: "", label: "graduacion (est.)" }
+        ]
+      },
+      projects: {
+        kicker: "Proyectos",
+        title: "Proyectos",
+        hint: "sigue scrolleando: las tarjetas se apilan",
+        items: [
+          {
+            title: "Sistema empresarial",
+            desc: "Gestion de empleados, vacaciones y asistencia. En produccion con +10 usuarios. Migre el backend de AWS a infraestructura self-hosted (Cloudflare Tunnel, systemd, backups automatizados) sin downtime.",
+            tags: ["React", "Electron", "FastAPI", "PostgreSQL", "Self-hosted"]
+          },
+          {
+            title: "Chatbot profesional local",
+            desc: "Chat conectado a un modelo de Ollama corriendo en mi propio servidor, con contexto controlado sobre mi perfil profesional. Puedes probarlo dentro del juego.",
+            tags: ["Ollama", "Agentic AI", "RAG ligero"]
+          },
+          {
+            title: "Dashboard de datos",
+            desc: "Dashboard de analisis integrado en la aplicacion empresarial para visualizar registros y metricas internas.",
+            tags: ["Analytics", "SQL", "Dashboard"]
+          },
+          {
+            title: "Agente de marketing",
+            desc: "Agente automatizado con Ollama y Hermes Agent: estudia mercado, genera publicaciones y las programa con APIs de imagen y video.",
+            tags: ["Ollama", "Hermes Agent", "Automation"]
+          },
+          {
+            title: "Agente IA programador",
+            desc: "Agente que programa de forma autonoma, orquestado por Hermes Agent hasta completar los objetivos definidos.",
+            tags: ["Agentic AI", "Code Automation"]
+          },
+          {
+            title: "Laboratorio de fuerza bruta",
+            desc: "Herramienta con interfaz para pruebas controladas y autorizadas de fuerza bruta en entornos de laboratorio.",
+            tags: ["Security Lab", "Testing"]
+          },
+          {
+            title: "Sitio romantico interactivo",
+            desc: "Sitio web interactivo con sistema de envio de correos y una experiencia visual personalizada.",
+            tags: ["Web", "Email", "UX"],
+            link: { href: "https://pablosanchez123.github.io/birthday-website-Alison/", label: "Ver sitio en vivo" }
+          }
+        ]
+      },
+      experience: {
+        kicker: "Experiencia",
+        giant: "IT SUPPORT",
+        meta: "Sistemas Integrados de Seguridad · 2022 - 2025",
+        items: [
+          "Diagnostico y resolucion de problemas en computadoras.",
+          "Gestion y monitoreo de sistemas CCTV.",
+          "Resolucion de errores en aplicaciones de camaras.",
+          "Emergencias tecnologicas en cualquier horario."
+        ]
+      },
+      skills: {
+        kicker: "Habilidades",
+        title: "Habilidades",
+        hint: "toca o pasa el cursor por los paneles",
+        items: [
+          { name: "Technical Support", desc: "Atencion directa a usuarios, hardware y software." },
+          { name: "Troubleshooting", desc: "Diagnostico rapido de fallas y causas raiz." },
+          { name: "SQL", desc: "Consultas, reportes y mantenimiento de datos." },
+          { name: "Databases", desc: "PostgreSQL en produccion, backups y accesos." },
+          { name: "OOP", desc: "Bases solidas de programacion orientada a objetos." },
+          { name: "Fast Learner", desc: "Adopto herramientas nuevas en dias, no meses." },
+          { name: "Teamwork", desc: "Comunicacion clara con equipos y clientes." }
+        ]
+      },
+      education: {
+        kicker: "Educacion",
+        title: "Educacion",
+        items: [
+          { tag: "2026 (est.)", title: "Universidad Latina de Costa Rica", desc: "Ingenieria en Sistemas Computacionales, actualmente cursando." },
+          { tag: "2022", title: "Colegio Bilingue Jorge Volio Jimenez", desc: "Bachillerato en Educacion Media." }
+        ]
+      },
+      certs: {
+        kicker: "Certs",
+        title: "Certificaciones",
+        items: [
+          { tag: "En progreso", title: "AWS Cloud Practitioner", desc: "Fundamentos de cloud computing, servicios AWS y buenas practicas de arquitectura." },
+          { tag: "En progreso", title: "Google Project Management", desc: "Planificacion, Agile, comunicacion con stakeholders y workflow management." }
+        ]
+      },
+      contact: {
+        kicker: "Contacto",
+        title: "Hablemos",
+        note: "Disponible para conectar. Escribeme o revisa mi codigo.",
+        emailLabel: "Email",
+        phoneLabel: "Telefono",
+        githubLabel: "GitHub",
+        gameNote: "Quieres preguntarle algo a mi asistente de IA? Vive dentro del juego, en la seccion Proyectos.",
+        gameBtn: "Entrar al juego"
+      },
+      footer: "© 2026 Pablo Sanchez Abarca · hecho a mano, sin plantillas"
     },
     canvasLabel: "Minijuego espacial del portafolio de Pablo Sanchez Abarca",
     radarLabel: "Planetas del portafolio",
@@ -394,27 +501,139 @@ const translations = {
   en: {
     pageTitle: "Pablo Sanchez Abarca | Project Portfolio",
     metaDescription: "Interactive project portfolio for Pablo Sanchez Abarca, Systems Engineer and IT Support Technician.",
-    bootKicker: "SYSTEMS ENGINEER",
-    bootCopy: "Project Portfolio",
-    languageQuestion: "Choose language",
-    startButton: "START",
-    intro: {
-      kicker: "INTERACTIVE PORTFOLIO",
-      title: "Pablo Sanchez Abarca's Portfolio",
-      lead: "Welcome. This is my portfolio turned into a small space game. Explore freely:",
-      items: [
-        { keys: "Planets", text: "Each planet is an information section (profile, experience, projects...). Get close and press E to open it." },
-        { keys: "WASD / Arrows", text: "Move through space with the WASD keys or the keyboard arrows." },
-        { keys: "Z", text: "It is interactive: fire lasers with the Z key to destroy the asteroids." },
-        { keys: "Radar", text: "Use the radar on the left to travel straight to any section." }
-      ],
-      itemsMobile: [
-        { keys: "Planets", text: "Each planet is an information section. Tap it on screen or get close and tap E to open it." },
-        { keys: "D-Pad", text: "Move through space with the touch pad." },
-        { keys: "Z", text: "It is interactive: fire lasers with the Z button to destroy the asteroids." },
-        { keys: "Menu", text: "Use the bottom bar to travel straight to any section." }
-      ],
-      button: "EXPLORE"
+    landing: {
+      nav: {
+        profile: "Profile",
+        projects: "Projects",
+        experience: "Experience",
+        skills: "Skills",
+        education: "Education",
+        certs: "Certs",
+        contact: "Contact"
+      },
+      hero: {
+        kicker: "SYSTEMS ENGINEER · COSTA RICA",
+        title: "Pablo Sanchez Abarca",
+        typeBase: "I build and support ",
+        typePhrases: [
+          "systems that stay up.",
+          "apps already in production.",
+          "AI agents with Ollama.",
+          "dashboards with real data."
+        ],
+        ctaProjects: "View projects",
+        ctaGame: "Enter the game",
+        badges: ["React", "FastAPI", "PostgreSQL", "Ollama", "Electron", "AWS"],
+        scrollHint: "scroll"
+      },
+      sideCta: "Enter the game",
+      sideNote: "the playable portfolio",
+      profile: {
+        kicker: "Profile",
+        title: "Support · Systems · AI",
+        body: "I provide IT support, solve technical issues, and administer systems. I am growing toward project management with machine learning and artificial intelligence.",
+        stats: [
+          { value: 10, prefix: "+", label: "users in production" },
+          { value: 7, prefix: "", label: "projects" },
+          { value: 3, prefix: "", label: "years of experience" },
+          { value: 2026, prefix: "", label: "graduation (est.)" }
+        ]
+      },
+      projects: {
+        kicker: "Projects",
+        title: "Projects",
+        hint: "keep scrolling: the cards stack up",
+        items: [
+          {
+            title: "Business management system",
+            desc: "Employee, vacation, and attendance management. In production with 10+ users. Migrated the backend from AWS to self-hosted infrastructure (Cloudflare Tunnel, systemd, automated backups) with zero downtime.",
+            tags: ["React", "Electron", "FastAPI", "PostgreSQL", "Self-hosted"]
+          },
+          {
+            title: "Local professional chatbot",
+            desc: "Chat connected to an Ollama model running on my own server, with controlled context about my professional profile. You can try it inside the game.",
+            tags: ["Ollama", "Agentic AI", "Lightweight RAG"]
+          },
+          {
+            title: "Data dashboard",
+            desc: "Analytics dashboard integrated into the business application to visualize records and internal metrics.",
+            tags: ["Analytics", "SQL", "Dashboard"]
+          },
+          {
+            title: "Marketing agent",
+            desc: "Automated agent with Ollama and Hermes Agent: researches markets, generates posts, and schedules them through image and video APIs.",
+            tags: ["Ollama", "Hermes Agent", "Automation"]
+          },
+          {
+            title: "AI coding agent",
+            desc: "An agent that codes autonomously, orchestrated by Hermes Agent until the defined objectives are complete.",
+            tags: ["Agentic AI", "Code Automation"]
+          },
+          {
+            title: "Brute-force lab",
+            desc: "Interface-based tool for controlled and authorized brute-force testing in lab environments.",
+            tags: ["Security Lab", "Testing"]
+          },
+          {
+            title: "Interactive romantic website",
+            desc: "Interactive website with an email-sending system and a personalized visual experience.",
+            tags: ["Web", "Email", "UX"],
+            link: { href: "https://pablosanchez123.github.io/birthday-website-Alison/", label: "View live site" }
+          }
+        ]
+      },
+      experience: {
+        kicker: "Experience",
+        giant: "IT SUPPORT",
+        meta: "Sistemas Integrados de Seguridad · 2022 - 2025",
+        items: [
+          "Diagnosed and solved computer issues.",
+          "Managed and monitored CCTV systems.",
+          "Resolved errors in camera applications.",
+          "Handled tech emergencies on any schedule."
+        ]
+      },
+      skills: {
+        kicker: "Skills",
+        title: "Skills",
+        hint: "tap or hover each panel",
+        items: [
+          { name: "Technical Support", desc: "Direct support for users, hardware, and software." },
+          { name: "Troubleshooting", desc: "Fast diagnosis of failures and root causes." },
+          { name: "SQL", desc: "Queries, reports, and data maintenance." },
+          { name: "Databases", desc: "PostgreSQL in production, backups, and access." },
+          { name: "OOP", desc: "Solid object-oriented programming fundamentals." },
+          { name: "Fast Learner", desc: "I pick up new tools in days, not months." },
+          { name: "Teamwork", desc: "Clear communication with teams and clients." }
+        ]
+      },
+      education: {
+        kicker: "Education",
+        title: "Education",
+        items: [
+          { tag: "2026 (est.)", title: "Universidad Latina de Costa Rica", desc: "Computer Systems Engineering, currently enrolled." },
+          { tag: "2022", title: "Colegio Bilingue Jorge Volio Jimenez", desc: "High School Diploma." }
+        ]
+      },
+      certs: {
+        kicker: "Certs",
+        title: "Certifications",
+        items: [
+          { tag: "In progress", title: "AWS Cloud Practitioner", desc: "Cloud computing fundamentals, AWS services, and architecture best practices." },
+          { tag: "In progress", title: "Google Project Management", desc: "Planning, Agile, stakeholder communication, and workflow management." }
+        ]
+      },
+      contact: {
+        kicker: "Contact",
+        title: "Let's talk",
+        note: "Available to connect. Write to me or check my code.",
+        emailLabel: "Email",
+        phoneLabel: "Phone",
+        githubLabel: "GitHub",
+        gameNote: "Want to ask my AI assistant something? It lives inside the game, in the Projects section.",
+        gameBtn: "Enter the game"
+      },
+      footer: "© 2026 Pablo Sanchez Abarca · handmade, no templates"
     },
     canvasLabel: "Space minigame for Pablo Sanchez Abarca's project portfolio",
     radarLabel: "Portfolio planets",
@@ -861,26 +1080,7 @@ function applyLanguage(lang) {
   touchInteract.setAttribute("aria-label", copy.touchLabels.interact);
   touchFire.setAttribute("aria-label", copy.touchLabels.fire);
 
-  bootKicker.textContent = copy.bootKicker;
-  bootCopy.textContent = copy.bootCopy;
-  languageQuestion.textContent = copy.languageQuestion;
-  startButton.textContent = copy.startButton;
-
-  introKicker.textContent = copy.intro.kicker;
-  introTitle.textContent = copy.intro.title;
-  introLead.textContent = copy.intro.lead;
-  introStart.textContent = copy.intro.button;
-  introList.replaceChildren();
-  const isMobileLayout = window.matchMedia("(max-width: 760px)").matches;
-  const introItems = isMobileLayout && copy.intro.itemsMobile ? copy.intro.itemsMobile : copy.intro.items;
-  introItems.forEach((item) => {
-    const li = document.createElement("li");
-    const badge = document.createElement("span");
-    badge.className = "intro-key";
-    badge.textContent = item.keys;
-    li.append(badge, document.createTextNode(` ${item.text}`));
-    introList.appendChild(li);
-  });
+  renderLanding(copy.landing);
 
   languageButtons.forEach((button) => {
     const isActive = button.dataset.lang === nextLang;
@@ -915,6 +1115,556 @@ function applyLanguage(lang) {
   }
 }
 
+// ==================================================================
+// Landing: render + efectos. Componentes recreados de skiper-ui.com
+// (16, 19, 31, 37, 52, 58, 61) y cult-ui.com (hero-color-panel,
+// gradient-heading, typewriter, texture-button, squiggle-arrow,
+// minimal-card) en vanilla JS.
+// ==================================================================
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const finePointer = window.matchMedia("(pointer: fine)");
+
+const landingFx = {
+  chars: [],
+  charSection: null,
+  words: [],
+  wordSection: null,
+  stackCards: [],
+  stackWrap: null,
+  expPath: null,
+  expPathLen: 0,
+  expSection: null,
+  statsShown: false
+};
+
+// TextRoll (skiper58): dos copias apiladas de las letras, con stagger
+// desde el centro; la de arriba sube y la de abajo entra al hover.
+function makeRoll(text) {
+  const wrap = document.createElement("span");
+  wrap.className = "roll";
+  const layerA = document.createElement("span");
+  layerA.className = "roll-a";
+  const layerB = document.createElement("span");
+  layerB.className = "roll-b";
+  const chars = [...text];
+  const center = (chars.length - 1) / 2;
+  chars.forEach((ch, i) => {
+    const delay = Math.round(Math.abs(i - center) * 24);
+    [layerA, layerB].forEach((layer) => {
+      const s = document.createElement("span");
+      s.textContent = ch === " " ? " " : ch;
+      s.style.setProperty("--d", `${delay}ms`);
+      layer.appendChild(s);
+    });
+  });
+  wrap.append(layerA, layerB);
+  return wrap;
+}
+
+// Typewriter (cult-ui): escribe el texto base una vez y despues
+// alterna frases escribiendo y borrando en bucle.
+const typer = { timer: 0, seq: 0 };
+
+function startTypewriter(base, phrases) {
+  window.clearTimeout(typer.timer);
+  typer.seq += 1;
+  const seq = typer.seq;
+  const baseEl = document.getElementById("typeBase");
+  const cycleEl = document.getElementById("typeCycle");
+  baseEl.textContent = "";
+  cycleEl.textContent = "";
+
+  if (reducedMotion.matches) {
+    baseEl.textContent = base;
+    cycleEl.textContent = phrases[0] || "";
+    return;
+  }
+
+  let baseIndex = 0;
+  const typeBase = () => {
+    if (seq !== typer.seq) return;
+    baseEl.textContent = base.slice(0, baseIndex);
+    if (baseIndex < base.length) {
+      baseIndex += 1;
+      typer.timer = window.setTimeout(typeBase, 34);
+    } else {
+      cyclePhrase(0);
+    }
+  };
+  const cyclePhrase = (phraseIndex) => {
+    const phrase = phrases[phraseIndex % phrases.length];
+    let charIndex = 0;
+    const typeForward = () => {
+      if (seq !== typer.seq) return;
+      cycleEl.textContent = phrase.slice(0, charIndex);
+      if (charIndex < phrase.length) {
+        charIndex += 1;
+        typer.timer = window.setTimeout(typeForward, 40);
+      } else {
+        typer.timer = window.setTimeout(eraseBack, 1600);
+      }
+    };
+    const eraseBack = () => {
+      if (seq !== typer.seq) return;
+      cycleEl.textContent = cycleEl.textContent.slice(0, -1);
+      if (cycleEl.textContent.length > 0) {
+        typer.timer = window.setTimeout(eraseBack, 18);
+      } else {
+        typer.timer = window.setTimeout(() => cyclePhrase(phraseIndex + 1), 320);
+      }
+    };
+    typeForward();
+  };
+  typeBase();
+}
+
+// AnimatedNumber (skiper37): los numeros cuentan hacia arriba al
+// entrar en pantalla.
+function runStatsCountUp() {
+  const values = [...document.querySelectorAll(".stat-value")];
+  values.forEach((el) => {
+    const target = Number(el.dataset.value);
+    const prefix = el.dataset.prefix || "";
+    if (reducedMotion.matches) {
+      el.textContent = prefix + target;
+      return;
+    }
+    const started = performance.now();
+    const duration = 1400;
+    const tick = (now) => {
+      const t = Math.min(1, (now - started) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = prefix + Math.round(target * eased);
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      }
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting && !landingFx.statsShown) {
+      landingFx.statsShown = true;
+      runStatsCountUp();
+    }
+  });
+}, { threshold: 0.4 });
+
+function renderLanding(L) {
+  landingNavLinks.forEach((link) => {
+    const key = link.dataset.scroll.replace("l-", "");
+    if (L.nav[key]) {
+      link.replaceChildren(makeRoll(L.nav[key]));
+    }
+  });
+
+  document.getElementById("heroKicker").textContent = L.hero.kicker;
+  document.getElementById("heroTitle").textContent = L.hero.title;
+  document.getElementById("heroCtaProjects").textContent = L.hero.ctaProjects;
+  heroCtaGame.textContent = L.hero.ctaGame;
+  document.getElementById("scrollHint").textContent = L.hero.scrollHint;
+  document.getElementById("sideCtaLabel").textContent = L.sideCta;
+  document.getElementById("sideCtaNote").textContent = L.sideNote;
+  startTypewriter(L.hero.typeBase, L.hero.typePhrases);
+
+  const badges = document.getElementById("heroBadges");
+  badges.replaceChildren();
+  L.hero.badges.forEach((name) => {
+    const span = document.createElement("span");
+    span.textContent = name;
+    badges.appendChild(span);
+  });
+
+  // Perfil: Character reveal (skiper31) sobre el titulo
+  document.getElementById("profileKicker").textContent = L.profile.kicker;
+  const profileTitle = document.getElementById("profileTitle");
+  profileTitle.replaceChildren();
+  landingFx.chars = [];
+  const titleChars = [...L.profile.title];
+  const charCenter = (titleChars.length - 1) / 2;
+  titleChars.forEach((ch, i) => {
+    const s = document.createElement("span");
+    s.textContent = ch === " " ? " " : ch;
+    profileTitle.appendChild(s);
+    landingFx.chars.push({ el: s, dist: i - charCenter });
+  });
+  landingFx.charSection = document.getElementById("l-profile");
+
+  // Perfil: reveal palabra por palabra ligado al scroll
+  const profileBody = document.getElementById("profileBody");
+  profileBody.replaceChildren();
+  landingFx.words = [];
+  L.profile.body.split(" ").forEach((word, i, arr) => {
+    const s = document.createElement("span");
+    s.textContent = word + (i < arr.length - 1 ? " " : "");
+    profileBody.appendChild(s);
+    landingFx.words.push(s);
+  });
+  landingFx.wordSection = landingFx.charSection;
+
+  const statsRow = document.getElementById("statsRow");
+  statsRow.replaceChildren();
+  L.profile.stats.forEach((stat) => {
+    const box = document.createElement("div");
+    box.className = "stat";
+    const value = document.createElement("span");
+    value.className = "stat-value";
+    value.dataset.value = String(stat.value);
+    value.dataset.prefix = stat.prefix;
+    value.textContent = landingFx.statsShown ? stat.prefix + stat.value : stat.prefix + "0";
+    const label = document.createElement("span");
+    label.className = "stat-label";
+    label.textContent = stat.label;
+    box.append(value, label);
+    statsRow.appendChild(box);
+  });
+  statsObserver.observe(statsRow);
+
+  // Proyectos: StickyCard_001 (skiper16), tarjetas sticky que se apilan
+  document.getElementById("projectsKicker").textContent = L.projects.kicker;
+  document.getElementById("projectsTitle").textContent = L.projects.title;
+  document.getElementById("stackHint").textContent = L.projects.hint;
+  const stackWrap = document.getElementById("stackWrap");
+  stackWrap.replaceChildren();
+  landingFx.stackCards = [];
+  const total = L.projects.items.length;
+  L.projects.items.forEach((item, i) => {
+    const holder = document.createElement("div");
+    holder.className = "stack-item";
+    const card = document.createElement("article");
+    card.className = "stack-card";
+    card.style.marginTop = `calc(11vh + ${i * 26}px)`;
+
+    const num = document.createElement("span");
+    num.className = "stack-num";
+    num.textContent = `# 0${i + 1} / 0${total}`;
+    const h3 = document.createElement("h3");
+    h3.textContent = item.title;
+    const desc = document.createElement("p");
+    desc.textContent = item.desc;
+    card.append(num, h3, desc);
+
+    if (item.link) {
+      const a = document.createElement("a");
+      a.className = "stack-link";
+      a.href = item.link.href;
+      a.target = "_blank";
+      a.rel = "noreferrer";
+      a.textContent = item.link.label;
+      card.appendChild(a);
+    }
+
+    const tags = document.createElement("div");
+    tags.className = "stack-tags";
+    item.tags.forEach((tag) => {
+      const t = document.createElement("span");
+      t.textContent = tag;
+      tags.appendChild(t);
+    });
+    card.appendChild(tags);
+
+    holder.appendChild(card);
+    stackWrap.appendChild(holder);
+    const targetScale = Math.max(0.5, 1 - (total - i - 1) * 0.06);
+    landingFx.stackCards.push({ el: card, index: i, targetScale });
+  });
+  landingFx.stackWrap = stackWrap;
+
+  // Experiencia: LinePath (skiper19) + bloque de texto gigante
+  document.getElementById("experienceKicker").textContent = L.experience.kicker;
+  document.getElementById("experienceTitle").textContent = L.experience.giant;
+  document.getElementById("experienceMeta").textContent = L.experience.meta;
+  fillList("experienceList", L.experience.items);
+  landingFx.expSection = document.getElementById("l-experience");
+  landingFx.expPath = document.getElementById("expLinePath");
+  if (landingFx.expPath && !landingFx.expPathLen) {
+    landingFx.expPathLen = landingFx.expPath.getTotalLength();
+    landingFx.expPath.style.strokeDasharray = String(landingFx.expPathLen);
+    landingFx.expPath.style.strokeDashoffset = String(landingFx.expPathLen);
+  }
+
+  // Habilidades: HoverExpand_001 (skiper52), paneles que se expanden
+  document.getElementById("skillsKicker").textContent = L.skills.kicker;
+  document.getElementById("skillsTitle").textContent = L.skills.title;
+  document.getElementById("expandHint").textContent = L.skills.hint;
+  const expand = document.getElementById("skillsExpand");
+  expand.replaceChildren();
+  L.skills.items.forEach((skill, i) => {
+    const panel = document.createElement("button");
+    panel.type = "button";
+    panel.className = "he-panel" + (i === 1 ? " is-active" : "");
+    panel.setAttribute("aria-label", skill.name);
+
+    const collapsed = document.createElement("span");
+    collapsed.className = "he-collapsed";
+    collapsed.textContent = skill.name;
+
+    const open = document.createElement("span");
+    open.className = "he-open";
+    const num = document.createElement("span");
+    num.className = "he-num";
+    num.textContent = `# 0${i + 1}`;
+    const name = document.createElement("span");
+    name.className = "he-name";
+    name.textContent = skill.name;
+    const desc = document.createElement("span");
+    desc.className = "he-desc";
+    desc.textContent = skill.desc;
+    open.append(num, name, desc);
+
+    panel.append(collapsed, open);
+
+    const activate = () => {
+      expand.querySelectorAll(".he-panel").forEach((p) => p.classList.remove("is-active"));
+      panel.classList.add("is-active");
+    };
+    panel.addEventListener("click", activate);
+    if (finePointer.matches) {
+      panel.addEventListener("pointerenter", activate);
+    }
+    expand.appendChild(panel);
+  });
+
+  // Educacion / Certs: Minimal Card (cult-ui)
+  const renderMiniCards = (containerId, items) => {
+    const container = document.getElementById(containerId);
+    container.replaceChildren();
+    items.forEach((item) => {
+      const card = document.createElement("article");
+      card.className = "mini-card";
+      const tag = document.createElement("span");
+      tag.className = "mini-tag";
+      tag.textContent = item.tag;
+      const h3 = document.createElement("h3");
+      h3.textContent = item.title;
+      const p = document.createElement("p");
+      p.textContent = item.desc;
+      card.append(tag, h3, p);
+      container.appendChild(card);
+    });
+  };
+  document.getElementById("educationKicker").textContent = L.education.kicker;
+  document.getElementById("educationTitle").textContent = L.education.title;
+  renderMiniCards("educationList", L.education.items);
+  document.getElementById("certsKicker").textContent = L.certs.kicker;
+  document.getElementById("certsTitle").textContent = L.certs.title;
+  renderMiniCards("certsList", L.certs.items);
+
+  // Contacto: enlaces grandes con TextRoll (skiper58)
+  document.getElementById("contactKicker").textContent = L.contact.kicker;
+  document.getElementById("contactTitle").textContent = L.contact.title;
+  document.getElementById("contactNote").textContent = L.contact.note;
+  document.getElementById("contactGameNote").textContent = L.contact.gameNote;
+  document.getElementById("contactGameBtnLabel").textContent = L.contact.gameBtn;
+  const contactActions = document.getElementById("contactActions");
+  contactActions.replaceChildren();
+  const contactLinks = [
+    { label: L.contact.emailLabel, href: "mailto:pablo3020100@gmail.com", text: "pablo3020100@gmail.com" },
+    { label: L.contact.phoneLabel, href: "tel:+50687296474", text: "(+506) 8729-6474" },
+    { label: L.contact.githubLabel, href: "https://github.com/pablosanchez123", text: "github.com/pablosanchez123" }
+  ];
+  contactLinks.forEach((entry) => {
+    const kind = document.createElement("p");
+    kind.className = "contact-kind";
+    kind.textContent = entry.label;
+    const a = document.createElement("a");
+    a.href = entry.href;
+    if (entry.href.startsWith("http")) {
+      a.target = "_blank";
+      a.rel = "noreferrer";
+    }
+    a.appendChild(makeRoll(entry.text));
+    contactActions.append(kind, a);
+  });
+
+  document.getElementById("landingFooterText").textContent = L.footer;
+}
+
+function fillList(id, items) {
+  const list = document.getElementById(id);
+  list.replaceChildren();
+  items.forEach((text) => {
+    const li = document.createElement("li");
+    li.textContent = text;
+    list.appendChild(li);
+  });
+}
+
+// ==================================================================
+// Landing: motor de animacion por frame.
+// - Hero Color Panels (cult-ui): paneles de color inclinados en canvas.
+// - Character/word reveal (skiper31): scrub con el scroll.
+// - StickyCard_001 (skiper16): escala de tarjetas apiladas.
+// - LinePath (skiper19): el trazo se dibuja con el progreso.
+// - SpringMouseFollow (skiper61): punto que persigue el cursor.
+// ==================================================================
+const panelsCanvas = document.getElementById("panelsCanvas");
+const panelsCtx = panelsCanvas ? panelsCanvas.getContext("2d") : null;
+const cursorDot = document.getElementById("cursorDot");
+const heroSection = document.getElementById("l-hero");
+
+const cursorSpring = {
+  x: 0, y: 0, vx: 0, vy: 0,
+  targetX: -100, targetY: -100,
+  scale: 1, targetScale: 1,
+  opacity: 0, targetOpacity: 0
+};
+
+landing.addEventListener("pointermove", (event) => {
+  cursorSpring.targetX = event.clientX;
+  cursorSpring.targetY = event.clientY;
+  cursorSpring.targetOpacity = 1;
+});
+landing.addEventListener("pointerleave", () => {
+  cursorSpring.targetOpacity = 0;
+});
+landing.addEventListener("pointerover", (event) => {
+  const interactive = event.target.closest("a, button");
+  cursorSpring.targetScale = interactive ? 2.4 : 1;
+});
+
+const PANEL_COLORS = ["#8000ff", "#b366ff", "#4d0099", "#9933ff", "#6600cc", "#a64dff", "#5900b3"];
+
+function resizePanelsCanvas() {
+  if (!panelsCanvas) {
+    return;
+  }
+  panelsCanvas.width = Math.max(360, Math.floor(panelsCanvas.clientWidth / 2));
+  panelsCanvas.height = Math.max(240, Math.floor(panelsCanvas.clientHeight / 2));
+}
+
+function drawColorPanels(time) {
+  if (!panelsCtx) {
+    return;
+  }
+  const w = panelsCanvas.width;
+  const h = panelsCanvas.height;
+  panelsCtx.setTransform(1, 0, 0, 1, 0, 0);
+  panelsCtx.clearRect(0, 0, w, h);
+  panelsCtx.globalCompositeOperation = "lighter";
+  panelsCtx.filter = "blur(14px)";
+
+  const count = PANEL_COLORS.length;
+  const t = time * 0.00022;
+  for (let i = 0; i < count; i += 1) {
+    const wobble = Math.sin(t * 2.4 + i * 1.7) * 0.045;
+    const cx = ((i + 0.5) / count + wobble) * w;
+    const angle = 0.52 + Math.sin(t * 1.6 + i * 0.9) * 0.1;
+    const panelWidth = (w / count) * (0.62 + 0.18 * Math.sin(t * 3 + i * 2.3));
+
+    panelsCtx.save();
+    panelsCtx.translate(cx, h * 0.5);
+    panelsCtx.rotate(angle);
+    const grad = panelsCtx.createLinearGradient(0, -h, 0, h);
+    grad.addColorStop(0, "transparent");
+    grad.addColorStop(0.35, PANEL_COLORS[i] + "cc");
+    grad.addColorStop(0.65, PANEL_COLORS[i] + "88");
+    grad.addColorStop(1, "transparent");
+    panelsCtx.fillStyle = grad;
+    panelsCtx.fillRect(-panelWidth / 2, -h, panelWidth, h * 2);
+    panelsCtx.restore();
+  }
+  panelsCtx.filter = "none";
+  panelsCtx.globalCompositeOperation = "source-over";
+}
+
+function viewProgress(rect, vh) {
+  // progreso 0-1 mientras la seccion cruza la ventana (start end -> end start)
+  return Math.min(1, Math.max(0, (vh - rect.top) / (vh + rect.height)));
+}
+
+function updateScrollFx() {
+  const vh = window.innerHeight;
+
+  if (landingFx.charSection && landingFx.chars.length) {
+    const rect = landingFx.charSection.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < vh) {
+      const p = viewProgress(rect, vh);
+      const t = reducedMotion.matches ? 1 : Math.min(1, Math.max(0, (p - 0.1) / 0.32));
+      const ease = 1 - Math.pow(1 - t, 2);
+      landingFx.chars.forEach((c) => {
+        const off = c.dist * 42 * (1 - ease);
+        c.el.style.transform = `translateX(${off}px) rotateX(${off}deg)`;
+      });
+      const wordCount = landingFx.words.length;
+      landingFx.words.forEach((w, i) => {
+        const wt = Math.min(1, Math.max(0, (p - 0.16 - (i / wordCount) * 0.26) / 0.06));
+        w.style.opacity = reducedMotion.matches ? "1" : String(0.14 + 0.86 * wt);
+      });
+    }
+  }
+
+  if (landingFx.stackWrap && landingFx.stackCards.length && !reducedMotion.matches) {
+    const rect = landingFx.stackWrap.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < vh) {
+      const scrollable = rect.height - vh;
+      const p = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
+      const n = landingFx.stackCards.length;
+      landingFx.stackCards.forEach((card) => {
+        const rangeStart = card.index / n;
+        const t = Math.min(1, Math.max(0, (p - rangeStart) / (1 - rangeStart)));
+        const scale = 1 - (1 - card.targetScale) * t;
+        card.el.style.transform = `scale(${scale.toFixed(4)})`;
+      });
+    }
+  }
+
+  if (landingFx.expPath && landingFx.expSection) {
+    const rect = landingFx.expSection.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < vh) {
+      const p = viewProgress(rect, vh);
+      const visible = reducedMotion.matches ? 1 : Math.min(1, 0.1 + p * 1.4);
+      landingFx.expPath.style.strokeDashoffset = String(landingFx.expPathLen * (1 - visible));
+    }
+  }
+}
+
+let lastFxTime = 0;
+
+function landingFxLoop(time) {
+  if (state.started) {
+    return;
+  }
+  requestAnimationFrame(landingFxLoop);
+  const dt = Math.min(0.05, (time - lastFxTime) / 1000 || 0.016);
+  lastFxTime = time;
+
+  if (heroSection && panelsCtx && !reducedMotion.matches) {
+    const heroRect = heroSection.getBoundingClientRect();
+    if (heroRect.bottom > 0) {
+      drawColorPanels(time);
+    }
+  }
+
+  updateScrollFx();
+
+  if (finePointer.matches && cursorDot && !reducedMotion.matches) {
+    // resorte estilo skiper61 (mass 0.1 / damping 10 / stiffness 131)
+    const k = 131;
+    const damping = 10;
+    cursorSpring.vx += ((cursorSpring.targetX - cursorSpring.x) * k - cursorSpring.vx * damping) * dt;
+    cursorSpring.vy += ((cursorSpring.targetY - cursorSpring.y) * k - cursorSpring.vy * damping) * dt;
+    cursorSpring.x += cursorSpring.vx * dt;
+    cursorSpring.y += cursorSpring.vy * dt;
+    cursorSpring.scale += (cursorSpring.targetScale - cursorSpring.scale) * Math.min(1, dt * 12);
+    cursorSpring.opacity += (cursorSpring.targetOpacity - cursorSpring.opacity) * Math.min(1, dt * 10);
+    cursorDot.style.transform = `translate(${cursorSpring.x - 9}px, ${cursorSpring.y - 9}px) scale(${cursorSpring.scale.toFixed(3)})`;
+    cursorDot.style.opacity = cursorSpring.opacity.toFixed(3);
+  }
+}
+
+function initLandingFx() {
+  resizePanelsCanvas();
+  if (reducedMotion.matches && panelsCtx) {
+    drawColorPanels(1200);
+  }
+  requestAnimationFrame(landingFxLoop);
+}
+
+window.addEventListener("resize", resizePanelsCanvas);
+
 function resizeCanvas() {
   state.width = window.innerWidth;
   state.height = window.innerHeight;
@@ -926,41 +1676,20 @@ function resizeCanvas() {
   ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 }
 
-function showIntro() {
-  if (state.started) {
-    return;
-  }
-  bootScreen.classList.add("is-hidden");
-  window.setTimeout(() => {
-    bootScreen.style.display = "none";
-  }, 280);
-  introScreen.classList.remove("is-hidden");
-  introStart.focus();
-}
-
-function advanceIntro() {
-  if (bootScreen.classList.contains("is-hidden")) {
-    startGame();
-  } else {
-    showIntro();
-  }
-}
-
 function startGame(options = {}) {
   if (state.started) {
     return;
   }
   const instant = options.instant === true;
   state.started = true;
-  bootScreen.classList.add("is-hidden");
-  introScreen.classList.add("is-hidden");
+  window.clearTimeout(typer.timer);
+  typer.seq += 1;
+  landing.classList.add("is-hidden");
   if (instant) {
-    bootScreen.style.display = "none";
-    introScreen.style.display = "none";
+    landing.style.display = "none";
   } else {
     window.setTimeout(() => {
-      bootScreen.style.display = "none";
-      introScreen.style.display = "none";
+      landing.style.display = "none";
     }, 360);
   }
   resizeCanvas();
@@ -1743,9 +2472,7 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (!state.started && (event.key === "Enter" || event.key === " ")) {
-    event.preventDefault();
-    advanceIntro();
+  if (!state.started) {
     return;
   }
 
@@ -1788,8 +2515,32 @@ languageButtons.forEach((button) => {
   button.addEventListener("click", () => applyLanguage(button.dataset.lang));
 });
 
-startButton.addEventListener("click", showIntro);
-introStart.addEventListener("click", () => startGame());
+landingEnterGame.addEventListener("click", () => startGame());
+document.getElementById("heroCtaGameOuter").addEventListener("click", () => startGame());
+document.getElementById("contactGameBtn").addEventListener("click", () => startGame());
+scrollButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    const target = document.getElementById(button.dataset.scroll);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+});
+
+const landingSectionObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      const link = landingNavLinks.find((item) => item.dataset.scroll === entry.target.id);
+      if (link) {
+        link.classList.toggle("is-active", entry.isIntersecting);
+      }
+    });
+  },
+  { rootMargin: "-40% 0px -55% 0px" }
+);
+landingSections.forEach((section) => landingSectionObserver.observe(section));
+
 closePanel.addEventListener("click", closeInfoPanel);
 canvas.addEventListener("pointerdown", handleCanvasPointer);
 touchInteract.addEventListener("click", () => openPlanet(state.nearest));
@@ -1849,6 +2600,7 @@ applyLanguage(query.get("lang") === "en" ? "en" : "es");
 initAsteroids();
 resizeCanvas();
 draw(0);
+initLandingFx();
 
 if (query.get("play") === "1") {
   window.setTimeout(() => startGame({ instant: true }), 80);

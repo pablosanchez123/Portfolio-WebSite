@@ -5,35 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Portafolio de proyectos interactivo de Pablo Sanchez Abarca, Systems Engineer e IT Support Technician.">
     <title>Pablo Sanchez Abarca | Portafolio de Proyectos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div class="boot-screen" id="bootScreen">
-      <div class="boot-stars" aria-hidden="true"></div>
-      <section class="boot-panel" aria-labelledby="bootTitle">
-        <p class="boot-kicker" data-i18n="bootKicker">SYSTEMS ENGINEER</p>
-        <h1 id="bootTitle">Pablo Sanchez Abarca</h1>
-        <p class="boot-copy" data-i18n="bootCopy">Portafolio de Proyectos</p>
-        <div class="language-picker" aria-labelledby="languageQuestion">
-          <p class="language-question" id="languageQuestion" data-i18n="languageQuestion">Elige idioma</p>
-          <div class="language-options">
-            <button class="language-button is-active" type="button" data-lang="es" aria-pressed="true">Espa&ntilde;ol</button>
-            <button class="language-button" type="button" data-lang="en" aria-pressed="false">English</button>
-          </div>
-        </div>
-        <button class="start-button" id="startButton" type="button" data-i18n="startButton">INICIAR</button>
-      </section>
-    </div>
+    <div class="landing" id="landing">
+      <span class="cursor-dot" id="cursorDot" aria-hidden="true"></span>
 
-    <div class="boot-screen intro-screen is-hidden" id="introScreen">
-      <div class="boot-stars" aria-hidden="true"></div>
-      <section class="boot-panel intro-panel" aria-labelledby="introTitle">
-        <p class="boot-kicker" id="introKicker">PORTAFOLIO INTERACTIVO</p>
-        <h1 id="introTitle">Portafolio de Pablo Sanchez Abarca</h1>
-        <p class="intro-lead" id="introLead"></p>
-        <ul class="intro-list" id="introList"></ul>
-        <button class="start-button" id="introStart" type="button">EXPLORAR</button>
-      </section>
+      <nav class="landing-nav" aria-label="Navegacion del portafolio">
+        <a class="landing-brand" href="#l-hero" data-scroll="l-hero">PS.</a>
+        <div class="landing-nav-links">
+          <button type="button" data-scroll="l-profile">Perfil</button>
+          <button type="button" data-scroll="l-projects">Proyectos</button>
+          <button type="button" data-scroll="l-experience">Experiencia</button>
+          <button type="button" data-scroll="l-skills">Habilidades</button>
+          <button type="button" data-scroll="l-education">Educacion</button>
+          <button type="button" data-scroll="l-certs">Certs</button>
+          <button type="button" data-scroll="l-contact">Contacto</button>
+        </div>
+        <div class="landing-lang">
+          <button type="button" class="is-active" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </nav>
+
+      <div class="side-cta-wrap" id="sideCtaWrap">
+        <button class="landing-side-cta" id="landingEnterGame" type="button">
+          <span class="side-cta-inner">
+            <span class="side-cta-icon" aria-hidden="true">&#128640;</span>
+            <span class="side-cta-label" id="sideCtaLabel">Entrar al juego</span>
+          </span>
+        </button>
+        <svg class="side-cta-arrow" width="120" height="60" viewBox="-10 -10 220 120" fill="none" aria-hidden="true">
+          <g transform="rotate(180 100 50)">
+            <path d="M 15 50 Q 35 35, 55 48 T 95 52 Q 115 48, 135 50 Q 145 52, 155 48" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"></path>
+            <path d="M 155 48 Q 147 44, 143 42 M 155 48 Q 148 53, 144 56" stroke="currentColor" stroke-width="6" stroke-linecap="round"></path>
+          </g>
+        </svg>
+        <span class="side-cta-note" id="sideCtaNote">el portafolio jugable</span>
+      </div>
+
+      <main class="landing-main">
+        <section class="landing-hero" id="l-hero">
+          <canvas class="panels-canvas" id="panelsCanvas" aria-hidden="true"></canvas>
+          <div class="hero-content">
+            <p class="hero-eyebrow" id="heroKicker">SYSTEMS ENGINEER</p>
+            <h1 class="hero-title" id="heroTitle">Pablo Sanchez Abarca</h1>
+            <p class="hero-lead"><span id="typeBase"></span><span class="type-cycle" id="typeCycle"></span><span class="type-caret" aria-hidden="true"></span></p>
+            <div class="hero-actions">
+              <button type="button" class="t-btn t-btn-primary" data-scroll="l-projects"><span class="t-btn-inner" id="heroCtaProjects">Ver proyectos</span></button>
+              <button type="button" class="t-btn t-btn-ghost" id="heroCtaGameOuter"><span class="t-btn-inner" id="heroCtaGame">Entrar al juego</span></button>
+            </div>
+            <div class="hero-badges" id="heroBadges"></div>
+          </div>
+          <span class="scroll-hint" id="scrollHint">scroll</span>
+        </section>
+
+        <section class="landing-section" id="l-profile">
+          <p class="section-index"><span id="profileIdx">[01]</span> <span id="profileKicker">Perfil</span></p>
+          <h2 class="char-reveal" id="profileTitle">Quien soy</h2>
+          <p class="word-reveal" id="profileBody"></p>
+          <div class="stats-row" id="statsRow"></div>
+        </section>
+
+        <section class="landing-section landing-section-stack" id="l-projects">
+          <p class="section-index"><span id="projectsIdx">[02]</span> <span id="projectsKicker">Proyectos</span></p>
+          <h2 id="projectsTitle">Proyectos</h2>
+          <p class="stack-hint" id="stackHint">sigue scrolleando, las tarjetas se apilan</p>
+          <div class="stack-wrap" id="stackWrap"></div>
+        </section>
+
+        <section class="landing-section" id="l-experience">
+          <p class="section-index"><span id="experienceIdx">[03]</span> <span id="experienceKicker">Experiencia</span></p>
+          <svg class="exp-line" id="expLine" viewBox="0 0 320 900" fill="none" aria-hidden="true" overflow="visible">
+            <path id="expLinePath" d="M 160 0 C 260 90, 60 150, 150 240 C 250 330, 40 380, 130 470 C 240 570, 300 520, 250 620 C 200 720, 80 680, 120 790 C 145 860, 190 870, 160 900" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+          </svg>
+          <div class="exp-block">
+            <h2 class="exp-giant" id="experienceTitle">IT SUPPORT</h2>
+            <p class="exp-meta" id="experienceMeta"></p>
+            <ul class="exp-list" id="experienceList"></ul>
+          </div>
+        </section>
+
+        <section class="landing-section" id="l-skills">
+          <p class="section-index"><span id="skillsIdx">[04]</span> <span id="skillsKicker">Habilidades</span></p>
+          <h2 id="skillsTitle">Habilidades</h2>
+          <p class="expand-hint" id="expandHint">toca o pasa el cursor por cada panel</p>
+          <div class="hover-expand" id="skillsExpand"></div>
+        </section>
+
+        <section class="landing-section landing-section-duo" id="l-education">
+          <div class="duo-col">
+            <p class="section-index"><span id="educationIdx">[05]</span> <span id="educationKicker">Educacion</span></p>
+            <h2 id="educationTitle">Educacion</h2>
+            <div class="mini-cards" id="educationList"></div>
+          </div>
+        </section>
+
+        <section class="landing-section landing-section-duo" id="l-certs">
+          <div class="duo-col">
+            <p class="section-index"><span id="certsIdx">[06]</span> <span id="certsKicker">Certs</span></p>
+            <h2 id="certsTitle">Certificaciones</h2>
+            <div class="mini-cards" id="certsList"></div>
+          </div>
+        </section>
+
+        <section class="landing-section" id="l-contact">
+          <p class="section-index"><span id="contactIdx">[07]</span> <span id="contactKicker">Contacto</span></p>
+          <h2 id="contactTitle">Contacto</h2>
+          <p class="contact-note" id="contactNote"></p>
+          <div class="contact-links" id="contactActions"></div>
+          <div class="contact-game">
+            <p id="contactGameNote"></p>
+            <button type="button" class="t-btn t-btn-primary" id="contactGameBtn"><span class="t-btn-inner" id="contactGameBtnLabel">Entrar al juego</span></button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="landing-footer">
+        <p id="landingFooterText">&copy; 2026 Pablo Sanchez Abarca</p>
+      </footer>
     </div>
 
     <main class="game-shell" id="gameShell">
