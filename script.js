@@ -96,7 +96,7 @@ const planets = [
         <li>Chatbot profesional local conectado a Ollama.</li>
         <li>Sitio web interactivo romantico con sistema para enviar correos.</li>
         <li>Sistema empresarial de gestion de empleados, vacaciones y asistencia, actualmente en produccion y utilizado por +10 users.</li>
-        <li>Dashboard de analisis de datos integrado.</li>
+        <li>Dashboard de vulnerabilidades (CVE/NVD) con datos en vivo de la NVD.</li>
         <li>Agente de marketing automatizado con Ollama y Hermes Agent.</li>
         <li>Agente de IA automatizado que programa.</li>
         <li>Herramienta con interfaz para pruebas controladas de fuerza bruta en laboratorio.</li>
@@ -261,9 +261,10 @@ const translations = {
             tags: ["Ollama", "Agentic AI", "RAG ligero"]
           },
           {
-            title: "Dashboard de datos",
-            desc: "Dashboard de analisis integrado en la aplicacion empresarial para visualizar registros y metricas internas.",
-            tags: ["Analytics", "SQL", "Dashboard"]
+            title: "Dashboard de vulnerabilidades (CVE/NVD)",
+            desc: "Dashboard de analisis de vulnerabilidades con datos en vivo de la NVD: tendencia de CVEs por severidad, top vendors/productos y distribucion por tipo de vulnerabilidad.",
+            tags: ["NVD API", "Data Viz", "Security"],
+            link: { href: "https://vulns.apisis.net", label: "Ver dashboard en vivo" }
           },
           {
             title: "Agente de marketing",
@@ -404,9 +405,10 @@ const translations = {
                   <span>React / Vite / Electron / FastAPI / PostgreSQL / Self-hosted / Cloudflare Tunnel</span>
                 </article>
                 <article class="project-card">
-                  <h3>Dashboard de datos</h3>
-                  <p>Dashboard de analisis de datos integrado en la misma aplicacion empresarial para visualizar registros y metricas internas.</p>
-                  <span>Analytics / SQL / Dashboard</span>
+                  <h3>Dashboard de vulnerabilidades (CVE/NVD)</h3>
+                  <p>Dashboard de analisis de vulnerabilidades con datos en vivo de la NVD: tendencia de CVEs por severidad, top vendors/productos y distribucion por tipo de vulnerabilidad.</p>
+                  <span>NVD API / Data Viz / Security</span>
+                  <p><a class="panel-link" href="https://vulns.apisis.net" target="_blank" rel="noreferrer">Ver dashboard en vivo</a></p>
                 </article>
                 <article class="project-card">
                   <h3>Agente de marketing automatizado</h3>
@@ -561,9 +563,10 @@ const translations = {
             tags: ["Ollama", "Agentic AI", "Lightweight RAG"]
           },
           {
-            title: "Data dashboard",
-            desc: "Analytics dashboard integrated into the business application to visualize records and internal metrics.",
-            tags: ["Analytics", "SQL", "Dashboard"]
+            title: "Vulnerability dashboard (CVE/NVD)",
+            desc: "Vulnerability analytics dashboard with live NVD data: CVE trend by severity, top vendors/products, and vulnerability type distribution.",
+            tags: ["NVD API", "Data Viz", "Security"],
+            link: { href: "https://vulns.apisis.net", label: "View live dashboard" }
           },
           {
             title: "Marketing agent",
@@ -704,9 +707,10 @@ const translations = {
                   <span>React / Vite / Electron / FastAPI / PostgreSQL / Self-hosted / Cloudflare Tunnel</span>
                 </article>
                 <article class="project-card">
-                  <h3>Data analysis dashboard</h3>
-                  <p>Data analytics dashboard integrated into the same business application to visualize records and internal metrics.</p>
-                  <span>Analytics / SQL / Dashboard</span>
+                  <h3>Vulnerability dashboard (CVE/NVD)</h3>
+                  <p>Vulnerability analytics dashboard with live NVD data: CVE trend by severity, top vendors/products, and vulnerability type distribution.</p>
+                  <span>NVD API / Data Viz / Security</span>
+                  <p><a class="panel-link" href="https://vulns.apisis.net" target="_blank" rel="noreferrer">View live dashboard</a></p>
                 </article>
                 <article class="project-card">
                   <h3>Automated marketing agent</h3>
