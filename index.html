@@ -25,9 +25,20 @@
           <button type="button" data-scroll="l-certs">Certs</button>
           <button type="button" data-scroll="l-contact">Contacto</button>
         </div>
-        <div class="landing-lang">
-          <button type="button" class="is-active" data-lang="es" aria-pressed="true">ES</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        <div class="landing-nav-right">
+          <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Cambiar a modo claro">
+            <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <g class="theme-toggle-hemis">
+                <path d="M120 67.5C149.25 67.5 172.5 90.75 172.5 120C172.5 149.25 149.25 172.5 120 172.5" class="theme-toggle-fill-a"></path>
+                <path d="M120 67.5C90.75 67.5 67.5 90.75 67.5 120C67.5 149.25 90.75 172.5 120 172.5" class="theme-toggle-fill-b"></path>
+              </g>
+              <path class="theme-toggle-ring" d="M120 3.75C55.5 3.75 3.75 55.5 3.75 120C3.75 184.5 55.5 236.25 120 236.25C184.5 236.25 236.25 184.5 236.25 120C236.25 55.5 184.5 3.75 120 3.75ZM120 214.5V172.5C90.75 172.5 67.5 149.25 67.5 120C67.5 90.75 90.75 67.5 120 67.5V25.5C172.5 25.5 214.5 67.5 214.5 120C214.5 172.5 172.5 214.5 120 214.5Z"></path>
+            </svg>
+          </button>
+          <div class="landing-lang">
+            <button type="button" class="is-active" data-lang="es" aria-pressed="true">ES</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          </div>
         </div>
       </nav>
 
@@ -69,11 +80,11 @@
           <div class="stats-row" id="statsRow"></div>
         </section>
 
-        <section class="landing-section landing-section-stack" id="l-projects">
+        <section class="landing-section" id="l-projects">
           <p class="section-index"><span id="projectsIdx">[02]</span> <span id="projectsKicker">Proyectos</span></p>
           <h2 id="projectsTitle">Proyectos</h2>
-          <p class="stack-hint" id="stackHint">sigue scrolleando, las tarjetas se apilan</p>
-          <div class="stack-wrap" id="stackWrap"></div>
+          <p class="acc-hint" id="projectsHint">toca cada proyecto para abrirlo</p>
+          <div class="bouncy-accordion" id="projectsAccordion"></div>
         </section>
 
         <section class="landing-section" id="l-experience">
@@ -82,7 +93,7 @@
             <path id="expLinePath" d="M 160 0 C 260 90, 60 150, 150 240 C 250 330, 40 380, 130 470 C 240 570, 300 520, 250 620 C 200 720, 80 680, 120 790 C 145 860, 190 870, 160 900" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
           </svg>
           <div class="exp-block">
-            <h2 class="exp-giant" id="experienceTitle">IT SUPPORT</h2>
+            <h2 class="exp-giant roll-trigger" id="experienceTitle">IT SUPPORT</h2>
             <p class="exp-meta" id="experienceMeta"></p>
             <ul class="exp-list" id="experienceList"></ul>
           </div>

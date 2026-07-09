@@ -697,13 +697,14 @@ button {
 }
 
 /* ==================================================================
-   Landing: negro puro + morado puro.
+   Landing: negro puro + morado puro, con modo claro opcional.
    Componentes recreados de skiper-ui.com y cult-ui.com (vanilla):
    - Hero Color Panels, Gradient Heading, Typewriter, Texture Button,
-     Squiggle Arrow, Minimal Card  (cult-ui.com)
+     Squiggle Arrow, Minimal Card, Expandable  (cult-ui.com)
    - StickyCard_001 (skiper16), Character scroll reveal (skiper31),
      LinePath scroll stroke (skiper19), AnimatedNumber (skiper37),
-     HoverExpand_001 (skiper52), TextRoll (skiper58),
+     HoverExpand_001 (skiper52), TextRoll (skiper58), Animated Link
+     (skiper40), ThemeToggleButton (skiper4/26),
      SpringMouseFollow (skiper61)  (skiper-ui.com)
    ================================================================== */
 .landing {
@@ -714,6 +715,11 @@ button {
   --l-ink: #ffffff;
   --l-muted: rgba(255, 255, 255, 0.6);
   --l-line: rgba(128, 0, 255, 0.45);
+  --l-nav-bg: rgba(0, 0, 0, 0.72);
+  --l-hero-end: #ffffff;
+  --l-card-bg: #120022;
+  --l-cta-grad-1: #1a0033;
+  --l-cta-grad-2: #000000;
   --l-radius: 28px;
   --font-display: "Baloo 2", "Nunito", Arial, sans-serif;
   --font-body: "Nunito", Arial, Helvetica, sans-serif;
@@ -727,9 +733,24 @@ button {
   color: var(--l-ink);
   font-family: var(--font-body);
   -webkit-overflow-scrolling: touch;
-  transition: opacity 320ms ease, visibility 320ms ease;
+  transition: opacity 320ms ease, visibility 320ms ease, background 280ms ease, color 280ms ease;
   scrollbar-width: thin;
-  scrollbar-color: var(--l-purple) #000000;
+  scrollbar-color: var(--l-purple) var(--l-bg);
+}
+
+/* Modo claro: mismos dos colores puros (negro y morado), invertidos */
+.landing[data-theme="light"] {
+  --l-bg: #ffffff;
+  --l-purple-soft: #6a00cc;
+  --l-purple-deep: #f1e3ff;
+  --l-ink: #000000;
+  --l-muted: rgba(0, 0, 0, 0.62);
+  --l-line: rgba(128, 0, 255, 0.32);
+  --l-nav-bg: rgba(255, 255, 255, 0.8);
+  --l-hero-end: #000000;
+  --l-card-bg: #faf5ff;
+  --l-cta-grad-1: #ffffff;
+  --l-cta-grad-2: #f1e3ff;
 }
 
 .landing::-webkit-scrollbar {
@@ -737,13 +758,13 @@ button {
 }
 
 .landing::-webkit-scrollbar-track {
-  background: #000000;
+  background: var(--l-bg);
 }
 
 .landing::-webkit-scrollbar-thumb {
   background: var(--l-purple-deep);
   border-radius: 999px;
-  border: 2px solid #000000;
+  border: 2px solid var(--l-bg);
 }
 
 .landing::-webkit-scrollbar-thumb:hover {
@@ -765,10 +786,10 @@ button {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--l-purple);
+  background: #ffffff;
   opacity: 0;
   pointer-events: none;
-  mix-blend-mode: screen;
+  mix-blend-mode: difference;
   will-change: transform, opacity;
 }
 
@@ -792,8 +813,75 @@ button {
   padding: 10px 18px;
   border: 1px solid var(--l-line);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.72);
+  background: var(--l-nav-bg);
   backdrop-filter: blur(14px);
+  transition: background 280ms ease, border-color 280ms ease;
+}
+
+.landing-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ---- Theme Toggle Button (skiper-ui skiper4/skiper26) ---- */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--l-line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 200ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  border-color: var(--l-purple);
+  transform: scale(1.08);
+  outline: none;
+}
+
+.theme-toggle:active {
+  transform: scale(0.92);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  overflow: visible;
+}
+
+.theme-toggle-fill-a {
+  fill: var(--l-ink);
+}
+
+.theme-toggle-fill-b {
+  fill: var(--l-bg);
+}
+
+.theme-toggle-ring {
+  fill: var(--l-ink);
+  transform-origin: 120px 120px;
+  transition: transform 380ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.theme-toggle-hemis {
+  transform-origin: 120px 120px;
+  transition: transform 380ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.landing[data-theme="light"] .theme-toggle-hemis {
+  transform: rotate(-180deg);
+}
+
+.landing[data-theme="light"] .theme-toggle-ring {
+  transform: rotate(180deg);
 }
 
 .landing-brand {
@@ -875,15 +963,21 @@ button {
 button:hover .roll .roll-a span,
 a:hover .roll .roll-a span,
 button:focus-visible .roll .roll-a span,
-a:focus-visible .roll .roll-a span {
+a:focus-visible .roll .roll-a span,
+.roll-trigger:hover .roll .roll-a span {
   transform: translateY(-105%);
 }
 
 button:hover .roll .roll-b span,
 a:hover .roll .roll-b span,
 button:focus-visible .roll .roll-b span,
-a:focus-visible .roll .roll-b span {
+a:focus-visible .roll .roll-b span,
+.roll-trigger:hover .roll .roll-b span {
   transform: translateY(0);
+}
+
+.roll-trigger {
+  cursor: default;
 }
 
 .landing-lang {
@@ -946,7 +1040,7 @@ a:focus-visible .roll .roll-b span {
   gap: 10px;
   padding: 13px 20px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #1a0033, #000000);
+  background: linear-gradient(180deg, var(--l-cta-grad-1), var(--l-cta-grad-2));
   color: var(--l-ink);
   font-family: var(--font-display);
   font-size: 16px;
@@ -983,10 +1077,8 @@ a:focus-visible .roll .roll-b span {
   justify-content: center;
   overflow: hidden;
   padding: 110px 7vw 90px;
-  background:
-    radial-gradient(52% 45% at 20% 20%, rgba(128, 0, 255, 0.22), transparent 68%),
-    radial-gradient(40% 38% at 82% 78%, rgba(128, 0, 255, 0.12), transparent 70%),
-    #000000;
+  background: var(--l-bg);
+  transition: background 280ms ease;
 }
 
 .hero-content {
@@ -1014,7 +1106,7 @@ a:focus-visible .roll .roll-b span {
   line-height: 0.98;
   letter-spacing: -0.02em;
   text-wrap: balance;
-  background: linear-gradient(0deg, var(--l-purple-soft) 0%, #ffffff 78%);
+  background: linear-gradient(0deg, var(--l-purple-soft) 0%, var(--l-hero-end) 78%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1095,7 +1187,7 @@ a:focus-visible .roll .roll-b span {
 }
 
 .t-btn-ghost .t-btn-inner {
-  background: linear-gradient(180deg, #14002b, #000000);
+  background: linear-gradient(180deg, var(--l-cta-grad-1), var(--l-cta-grad-2));
   color: var(--l-ink);
 }
 
@@ -1243,12 +1335,9 @@ a:focus-visible .roll .roll-b span {
   letter-spacing: 0.14em;
 }
 
-/* ---- Proyectos: StickyCard_001 (skiper16) ---- */
-.landing-section-stack {
-  padding-bottom: 0;
-}
-
-.stack-hint,
+/* ---- Proyectos: Bouncy Accordion (inspirado en Expandable de
+   cult-ui: stiffness 200 / damping 20 / bounce 0.2) ---- */
+.acc-hint,
 .expand-hint {
   margin: -12px 0 8px;
   color: var(--l-muted);
@@ -1256,77 +1345,145 @@ a:focus-visible .roll .roll-b span {
   font-weight: 600;
 }
 
-.stack-wrap {
-  position: relative;
-}
-
-.stack-item {
-  position: sticky;
-  top: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  height: 86vh;
-}
-
-.stack-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+.bouncy-accordion {
+  display: grid;
   gap: 12px;
-  width: min(860px, 100%);
-  min-height: min(400px, 56vh);
-  padding: 30px 32px;
+  max-width: 900px;
+}
+
+.acc-item {
   border: 1px solid var(--l-line);
-  border-radius: var(--l-radius);
-  background: linear-gradient(180deg, #17002e 0%, #0a0015 60%, #000000 100%);
-  transform-origin: top center;
-  will-change: transform;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 220ms ease, background 220ms ease;
+}
+
+.acc-item.is-open {
+  border-color: var(--l-purple);
+  background: var(--l-purple-deep);
+}
+
+.acc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 22px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.acc-header-left {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 14px;
+  min-width: 0;
+}
+
+.acc-num {
+  flex-shrink: 0;
+  color: var(--l-purple-soft);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.acc-title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.6vw, 26px);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.acc-badge {
+  flex-shrink: 0;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--l-purple);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.acc-chevron {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.acc-chevron::before,
+.acc-chevron::after {
+  content: "";
+  position: absolute;
+  background: var(--l-purple);
+  border-radius: 2px;
+  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 420ms ease;
+}
+
+.acc-chevron::before {
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.acc-chevron::after {
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.acc-item.is-open .acc-chevron::after {
+  transform: translateX(-50%) rotate(90deg);
+  opacity: 0;
+}
+
+/* El truco grid-template-rows 0fr->1fr da alto automatico; la curva
+   con overshoot (1.56) hace que el panel "rebote" al abrir. */
+.acc-body-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.acc-item.is-open .acc-body-wrap {
+  grid-template-rows: 1fr;
+}
+
+.acc-body-inner {
+  min-height: 0;
   overflow: hidden;
 }
 
-.stack-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(120% 90% at 85% -10%, rgba(128, 0, 255, 0.35), transparent 55%);
-  pointer-events: none;
-}
-
-.stack-num {
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--l-purple-soft);
-}
-
-.stack-card h3 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(24px, 3.6vw, 40px);
-  font-weight: 800;
-  line-height: 1.06;
-  letter-spacing: -0.01em;
-}
-
-.stack-card p {
+.acc-body-inner p {
+  margin: 0 22px 16px;
   max-width: 640px;
-  margin: 0;
   color: var(--l-muted);
   font-size: 15.5px;
   font-weight: 600;
   line-height: 1.6;
 }
 
-.stack-tags {
+.acc-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: auto;
+  margin: 0 22px 18px;
 }
 
-.stack-tags span {
+.acc-tags span {
   padding: 6px 12px;
   border: 1px solid var(--l-line);
   border-radius: 999px;
@@ -1337,19 +1494,55 @@ a:focus-visible .roll .roll-b span {
   letter-spacing: 0.06em;
 }
 
-.stack-link {
-  align-self: flex-start;
-  color: var(--l-ink);
+.acc-body-inner .css-link {
+  margin: 0 22px 20px;
+}
+
+/* ---- CssLink (skiper40 Link001): subrayado + flecha diagonal ---- */
+.css-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  color: var(--l-purple-soft);
   font-family: var(--font-display);
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  border-bottom: 2px solid var(--l-purple);
-  padding-bottom: 1px;
 }
 
-.stack-link:hover {
-  color: var(--l-purple-soft);
+.css-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.css-link:hover::before,
+.css-link:focus-visible::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.css-link-arrow {
+  width: 0.7em;
+  height: 0.7em;
+  transform: translateY(4px);
+  opacity: 0;
+  transition: transform 300ms ease, opacity 300ms ease;
+}
+
+.css-link:hover .css-link-arrow,
+.css-link:focus-visible .css-link-arrow {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 /* ---- Experiencia: LinePath (skiper19) + bloque gigante ---- */
@@ -1388,6 +1581,10 @@ a:focus-visible .roll .roll-b span {
   letter-spacing: -0.03em;
   text-transform: uppercase;
   color: #000000;
+}
+
+.exp-giant .roll {
+  line-height: inherit;
 }
 
 .exp-meta {
@@ -1523,9 +1720,9 @@ a:focus-visible .roll .roll-b span {
 .mini-card {
   padding: 24px 26px;
   border-radius: 24px;
-  background: #120022;
+  background: var(--l-card-bg);
   border: 1px solid var(--l-line);
-  transition: transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1), border-color 220ms ease;
+  transition: transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1), border-color 220ms ease, background 280ms ease;
 }
 
 .mini-card:hover {
@@ -1721,14 +1918,15 @@ a:focus-visible .roll .roll-b span {
     bottom: 110px;
   }
 
-  .stack-item {
-    height: 78vh;
-    align-items: center;
+  .acc-header {
+    padding: 16px 18px;
   }
 
-  .stack-card {
-    min-height: 0;
-    padding: 22px 20px;
+  .acc-body-inner p,
+  .acc-tags,
+  .acc-body-inner .css-link {
+    margin-left: 18px;
+    margin-right: 18px;
   }
 
   .hover-expand {

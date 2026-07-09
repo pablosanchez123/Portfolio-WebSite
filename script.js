@@ -7,6 +7,8 @@ const scrollButtons = [...document.querySelectorAll("[data-scroll]")];
 const landingNavLinks = [...document.querySelectorAll(".landing-nav-links [data-scroll]")];
 const landingSections = [...document.querySelectorAll(".landing-main > section")];
 const languageButtons = [...document.querySelectorAll("[data-lang]")];
+const themeToggle = document.getElementById("themeToggle");
+let themeLabels = { toLight: "", toDark: "" };
 const infoPanel = document.getElementById("infoPanel");
 const closePanel = document.getElementById("closePanel");
 const panelKicker = document.getElementById("panelKicker");
@@ -245,7 +247,8 @@ const translations = {
       projects: {
         kicker: "Proyectos",
         title: "Proyectos",
-        hint: "sigue scrolleando: las tarjetas se apilan",
+        hint: "toca cada proyecto para abrirlo",
+        featureBadge: "En produccion",
         items: [
           {
             title: "Sistema empresarial",
@@ -341,6 +344,8 @@ const translations = {
     canvasLabel: "Minijuego espacial del portafolio de Pablo Sanchez Abarca",
     radarLabel: "Planetas del portafolio",
     closeLabel: "Cerrar",
+    themeToLight: "Cambiar a modo claro",
+    themeToDark: "Cambiar a modo oscuro",
     touchControlsLabel: "Controles tactiles",
     touchLabels: {
       up: "Arriba",
@@ -542,7 +547,8 @@ const translations = {
       projects: {
         kicker: "Projects",
         title: "Projects",
-        hint: "keep scrolling: the cards stack up",
+        hint: "tap any project to open it",
+        featureBadge: "In production",
         items: [
           {
             title: "Business management system",
@@ -638,6 +644,8 @@ const translations = {
     canvasLabel: "Space minigame for Pablo Sanchez Abarca's project portfolio",
     radarLabel: "Portfolio planets",
     closeLabel: "Close",
+    themeToLight: "Switch to light mode",
+    themeToDark: "Switch to dark mode",
     touchControlsLabel: "Touch controls",
     touchLabels: {
       up: "Up",
@@ -1080,6 +1088,12 @@ function applyLanguage(lang) {
   touchInteract.setAttribute("aria-label", copy.touchLabels.interact);
   touchFire.setAttribute("aria-label", copy.touchLabels.fire);
 
+  themeLabels = { toLight: copy.themeToLight, toDark: copy.themeToDark };
+  themeToggle.setAttribute(
+    "aria-label",
+    landing.dataset.theme === "light" ? themeLabels.toDark : themeLabels.toLight
+  );
+
   renderLanding(copy.landing);
 
   languageButtons.forEach((button) => {
@@ -1129,8 +1143,6 @@ const landingFx = {
   charSection: null,
   words: [],
   wordSection: null,
-  stackCards: [],
-  stackWrap: null,
   expPath: null,
   expPathLen: 0,
   expSection: null,
@@ -1159,6 +1171,43 @@ function makeRoll(text) {
   });
   wrap.append(layerA, layerB);
   return wrap;
+}
+
+// CssLink (skiper40 Link001): subrayado que crece desde el centro
+// mas una flecha diagonal que entra en fade+translate al hover.
+function makeCssLink(href, label) {
+  const a = document.createElement("a");
+  a.className = "css-link";
+  a.href = href;
+  a.target = "_blank";
+  a.rel = "noreferrer";
+  const text = document.createElement("span");
+  text.textContent = label;
+  const arrow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  arrow.setAttribute("class", "css-link-arrow");
+  arrow.setAttribute("viewBox", "0 0 10 10");
+  arrow.setAttribute("fill", "none");
+  arrow.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "M1.004 9.166 9.337.833m0 0v8.333m0-8.333H1.004");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "1.25");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+  arrow.appendChild(path);
+  a.append(text, arrow);
+  return a;
+}
+
+// Bouncy Accordion (inspirado en Expandable de cult-ui): un solo
+// panel abierto a la vez, el resto se cierra.
+function toggleAccordionItem(target) {
+  const items = [...document.querySelectorAll("#projectsAccordion .acc-item")];
+  items.forEach((item) => {
+    const open = item === target ? !item.classList.contains("is-open") : false;
+    item.classList.toggle("is-open", open);
+    item.querySelector(".acc-header").setAttribute("aria-expanded", String(open));
+  });
 }
 
 // Typewriter (cult-ui): escribe el texto base una vez y despues
@@ -1322,59 +1371,75 @@ function renderLanding(L) {
   });
   statsObserver.observe(statsRow);
 
-  // Proyectos: StickyCard_001 (skiper16), tarjetas sticky que se apilan
+  // Proyectos: Bouncy Accordion (inspirado en Expandable de cult-ui,
+  // resorte stiffness 200 / damping 20 / bounce 0.2)
   document.getElementById("projectsKicker").textContent = L.projects.kicker;
   document.getElementById("projectsTitle").textContent = L.projects.title;
-  document.getElementById("stackHint").textContent = L.projects.hint;
-  const stackWrap = document.getElementById("stackWrap");
-  stackWrap.replaceChildren();
-  landingFx.stackCards = [];
-  const total = L.projects.items.length;
+  document.getElementById("projectsHint").textContent = L.projects.hint;
+  const accordion = document.getElementById("projectsAccordion");
+  accordion.replaceChildren();
   L.projects.items.forEach((item, i) => {
-    const holder = document.createElement("div");
-    holder.className = "stack-item";
-    const card = document.createElement("article");
-    card.className = "stack-card";
-    card.style.marginTop = `calc(11vh + ${i * 26}px)`;
+    const acc = document.createElement("article");
+    acc.className = "acc-item" + (i === 0 ? " is-open" : "");
 
+    const header = document.createElement("button");
+    header.type = "button";
+    header.className = "acc-header";
+    header.setAttribute("aria-expanded", i === 0 ? "true" : "false");
+
+    const left = document.createElement("span");
+    left.className = "acc-header-left";
     const num = document.createElement("span");
-    num.className = "stack-num";
-    num.textContent = `# 0${i + 1} / 0${total}`;
-    const h3 = document.createElement("h3");
-    h3.textContent = item.title;
-    const desc = document.createElement("p");
-    desc.textContent = item.desc;
-    card.append(num, h3, desc);
-
-    if (item.link) {
-      const a = document.createElement("a");
-      a.className = "stack-link";
-      a.href = item.link.href;
-      a.target = "_blank";
-      a.rel = "noreferrer";
-      a.textContent = item.link.label;
-      card.appendChild(a);
+    num.className = "acc-num";
+    num.textContent = `0${i + 1}`;
+    const title = document.createElement("span");
+    title.className = "acc-title";
+    title.textContent = item.title;
+    left.append(num, title);
+    if (item.feature) {
+      const badge = document.createElement("span");
+      badge.className = "acc-badge";
+      badge.textContent = L.projects.featureBadge;
+      left.appendChild(badge);
     }
 
+    const chevron = document.createElement("span");
+    chevron.className = "acc-chevron";
+    chevron.setAttribute("aria-hidden", "true");
+
+    header.append(left, chevron);
+    header.addEventListener("click", () => toggleAccordionItem(acc));
+
+    const bodyWrap = document.createElement("div");
+    bodyWrap.className = "acc-body-wrap";
+    const bodyInner = document.createElement("div");
+    bodyInner.className = "acc-body-inner";
+
+    const desc = document.createElement("p");
+    desc.textContent = item.desc;
+    bodyInner.appendChild(desc);
+
     const tags = document.createElement("div");
-    tags.className = "stack-tags";
+    tags.className = "acc-tags";
     item.tags.forEach((tag) => {
       const t = document.createElement("span");
       t.textContent = tag;
       tags.appendChild(t);
     });
-    card.appendChild(tags);
+    bodyInner.appendChild(tags);
 
-    holder.appendChild(card);
-    stackWrap.appendChild(holder);
-    const targetScale = Math.max(0.5, 1 - (total - i - 1) * 0.06);
-    landingFx.stackCards.push({ el: card, index: i, targetScale });
+    if (item.link) {
+      bodyInner.appendChild(makeCssLink(item.link.href, item.link.label));
+    }
+
+    bodyWrap.appendChild(bodyInner);
+    acc.append(header, bodyWrap);
+    accordion.appendChild(acc);
   });
-  landingFx.stackWrap = stackWrap;
 
   // Experiencia: LinePath (skiper19) + bloque de texto gigante
   document.getElementById("experienceKicker").textContent = L.experience.kicker;
-  document.getElementById("experienceTitle").textContent = L.experience.giant;
+  document.getElementById("experienceTitle").replaceChildren(makeRoll(L.experience.giant));
   document.getElementById("experienceMeta").textContent = L.experience.meta;
   fillList("experienceList", L.experience.items);
   landingFx.expSection = document.getElementById("l-experience");
@@ -1495,7 +1560,6 @@ function fillList(id, items) {
 // ==================================================================
 // Landing: motor de animacion por frame.
 // - Character/word reveal (skiper31): scrub con el scroll.
-// - StickyCard_001 (skiper16): escala de tarjetas apiladas.
 // - LinePath (skiper19): el trazo se dibuja con el progreso.
 // - SpringMouseFollow (skiper61): punto que persigue el cursor (solo
 //   la escala usa resorte; la posicion sigue el cursor 1:1, sin delay).
@@ -1545,21 +1609,6 @@ function updateScrollFx() {
       landingFx.words.forEach((w, i) => {
         const wt = Math.min(1, Math.max(0, (p - 0.16 - (i / wordCount) * 0.26) / 0.06));
         w.style.opacity = reducedMotion.matches ? "1" : String(0.14 + 0.86 * wt);
-      });
-    }
-  }
-
-  if (landingFx.stackWrap && landingFx.stackCards.length && !reducedMotion.matches) {
-    const rect = landingFx.stackWrap.getBoundingClientRect();
-    if (rect.bottom > 0 && rect.top < vh) {
-      const scrollable = rect.height - vh;
-      const p = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
-      const n = landingFx.stackCards.length;
-      landingFx.stackCards.forEach((card) => {
-        const rangeStart = card.index / n;
-        const t = Math.min(1, Math.max(0, (p - rangeStart) / (1 - rangeStart)));
-        const scale = 1 - (1 - card.targetScale) * t;
-        card.el.style.transform = `scale(${scale.toFixed(4)})`;
       });
     }
   }
@@ -2449,6 +2498,16 @@ window.addEventListener("keyup", (event) => {
 
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+});
+
+themeToggle.addEventListener("click", () => {
+  const next = landing.dataset.theme === "light" ? "dark" : "light";
+  landing.dataset.theme = next;
+  themeToggle.setAttribute("aria-pressed", String(next === "light"));
+  themeToggle.setAttribute(
+    "aria-label",
+    next === "light" ? themeLabels.toDark : themeLabels.toLight
+  );
 });
 
 landingEnterGame.addEventListener("click", () => startGame());
