@@ -338,8 +338,11 @@ const translations = {
         phoneLabel: "Telefono",
         githubLabel: "GitHub",
         gameNote: "Quieres preguntarle algo a mi asistente de IA? Vive dentro del juego, en la seccion Proyectos.",
-        gameBtn: "Entrar al juego"
+        gameBtn: "Entrar al juego",
+        copyLabel: "copiar",
+        copiedLabel: "copiado"
       },
+      launchStatus: "secuencia de lanzamiento completa",
       footer: "© 2026 Pablo Sanchez Abarca · hecho a mano, sin plantillas"
     },
     canvasLabel: "Minijuego espacial del portafolio de Pablo Sanchez Abarca",
@@ -640,8 +643,11 @@ const translations = {
         phoneLabel: "Phone",
         githubLabel: "GitHub",
         gameNote: "Want to ask my AI assistant something? It lives inside the game, in the Projects section.",
-        gameBtn: "Enter the game"
+        gameBtn: "Enter the game",
+        copyLabel: "copy",
+        copiedLabel: "copied"
       },
+      launchStatus: "launch sequence complete",
       footer: "© 2026 Pablo Sanchez Abarca · handmade, no templates"
     },
     canvasLabel: "Space minigame for Pablo Sanchez Abarca's project portfolio",
@@ -1306,6 +1312,7 @@ const statsObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.4 });
 
 function renderLanding(L) {
+  landingFxGen += 1;
   landingNavLinks.forEach((link) => {
     const key = link.dataset.scroll.replace("l-", "");
     if (L.nav[key]) {
@@ -1314,7 +1321,7 @@ function renderLanding(L) {
   });
 
   document.getElementById("heroKicker").textContent = L.hero.kicker;
-  document.getElementById("heroTitle").textContent = L.hero.title;
+  splitHeroTitle(L.hero.title);
   document.getElementById("heroCtaProjects").textContent = L.hero.ctaProjects;
   heroCtaGame.textContent = L.hero.ctaGame;
   document.getElementById("scrollHint").textContent = L.hero.scrollHint;
@@ -1359,9 +1366,10 @@ function renderLanding(L) {
 
   const statsRow = document.getElementById("statsRow");
   statsRow.replaceChildren();
-  L.profile.stats.forEach((stat) => {
+  L.profile.stats.forEach((stat, statIndex) => {
     const box = document.createElement("div");
-    box.className = "stat";
+    box.className = "stat fx-rise";
+    box.style.setProperty("--i", statIndex);
     const value = document.createElement("span");
     value.className = "stat-value";
     value.dataset.value = String(stat.value);
@@ -1384,7 +1392,8 @@ function renderLanding(L) {
   accordion.replaceChildren();
   L.projects.items.forEach((item, i) => {
     const acc = document.createElement("article");
-    acc.className = "acc-item" + (i === 0 ? " is-open" : "");
+    acc.className = "acc-item fx-rise" + (i === 0 ? " is-open" : "");
+    acc.style.setProperty("--i", i);
 
     const header = document.createElement("button");
     header.type = "button";
@@ -1463,7 +1472,8 @@ function renderLanding(L) {
   L.skills.items.forEach((skill, i) => {
     const panel = document.createElement("button");
     panel.type = "button";
-    panel.className = "he-panel" + (i === 1 ? " is-active" : "");
+    panel.className = "he-panel fx-rise" + (i === 1 ? " is-active" : "");
+    panel.style.setProperty("--i", i);
     panel.setAttribute("aria-label", skill.name);
 
     const collapsed = document.createElement("span");
@@ -1500,9 +1510,10 @@ function renderLanding(L) {
   const renderMiniCards = (containerId, items) => {
     const container = document.getElementById(containerId);
     container.replaceChildren();
-    items.forEach((item) => {
+    items.forEach((item, cardIndex) => {
       const card = document.createElement("article");
-      card.className = "mini-card";
+      card.className = "mini-card fx-rise";
+      card.style.setProperty("--i", cardIndex);
       const tag = document.createElement("span");
       tag.className = "mini-tag";
       tag.textContent = item.tag;
@@ -1534,9 +1545,10 @@ function renderLanding(L) {
     { label: L.contact.phoneLabel, href: "tel:+50687296474", text: "(+506) 8729-6474" },
     { label: L.contact.githubLabel, href: "https://github.com/pablosanchez123", text: "github.com/pablosanchez123" }
   ];
-  contactLinks.forEach((entry) => {
+  contactLinks.forEach((entry, entryIndex) => {
     const kind = document.createElement("p");
-    kind.className = "contact-kind";
+    kind.className = "contact-kind fx-rise";
+    kind.style.setProperty("--i", entryIndex * 2);
     kind.textContent = entry.label;
     const a = document.createElement("a");
     a.href = entry.href;
@@ -1545,19 +1557,191 @@ function renderLanding(L) {
       a.rel = "noreferrer";
     }
     a.appendChild(makeRoll(entry.text));
-    contactActions.append(kind, a);
+    const row = document.createElement("div");
+    row.className = "contact-row fx-rise";
+    row.style.setProperty("--i", entryIndex * 2 + 1);
+    row.appendChild(a);
+    if (entry.href.startsWith("mailto:")) {
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "copy-btn";
+      copyBtn.textContent = `[ ${L.contact.copyLabel} ]`;
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(entry.text);
+          copyBtn.textContent = `[ ${L.contact.copiedLabel} ]`;
+          copyBtn.classList.add("is-copied");
+          window.setTimeout(() => {
+            copyBtn.textContent = `[ ${L.contact.copyLabel} ]`;
+            copyBtn.classList.remove("is-copied");
+          }, 1600);
+        } catch (err) {
+          // sin permiso de clipboard: el mailto sigue disponible
+        }
+      });
+      row.appendChild(copyBtn);
+    }
+    contactActions.append(kind, row);
   });
 
   document.getElementById("landingFooterText").textContent = L.footer;
+  document.getElementById("footerLaunchStatus").textContent = L.launchStatus;
+  document.getElementById("footerLaunchLabel").textContent = L.contact.gameBtn;
+  renderMarquee(L);
+  renderHudRail(L);
 }
 
 function fillList(id, items) {
   const list = document.getElementById(id);
   list.replaceChildren();
-  items.forEach((text) => {
+  items.forEach((text, i) => {
     const li = document.createElement("li");
+    li.className = "fx-rise";
+    li.style.setProperty("--i", i);
     li.textContent = text;
     list.appendChild(li);
+  });
+}
+
+// ==================================================================
+// Secuencia de pre-lanzamiento: el scroll es la cuenta regresiva.
+// HUD lateral T-07 -> T-01, decode de kickers al entrar en vista,
+// titulo del hero letra a letra y marquee divisor.
+// ==================================================================
+const hudSectionIds = ["l-profile", "l-projects", "l-experience", "l-skills", "l-education", "l-certs", "l-contact"];
+let hudMarks = [];
+let landingFxGen = 0;
+
+function renderHudRail(L) {
+  const rail = document.getElementById("hudRail");
+  rail.replaceChildren();
+  hudSectionIds.forEach((id, i) => {
+    const mark = document.createElement("button");
+    mark.type = "button";
+    mark.className = "hud-mark";
+    mark.dataset.section = id;
+    const label = document.createElement("span");
+    label.className = "hud-label";
+    label.textContent = L.nav[id.replace("l-", "")] || "";
+    const t = document.createElement("span");
+    t.className = "hud-t";
+    t.textContent = `T-0${hudSectionIds.length - i}`;
+    mark.append(label, t);
+    mark.addEventListener("click", () => {
+      const section = document.getElementById(id);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+    rail.appendChild(mark);
+  });
+  hudMarks = [...rail.querySelectorAll(".hud-mark")];
+}
+
+function renderMarquee(L) {
+  const track = document.getElementById("marqueeTrack");
+  track.replaceChildren();
+  const roles = L.profile.title.split("·").map((s) => s.trim()).filter(Boolean);
+  const items = [...roles, ...L.hero.badges];
+  // 4 copias y la animacion recorre -50%: dos copias siempre llenan
+  // el ancho, asi el bucle es continuo sin salto visible.
+  for (let rep = 0; rep < 4; rep += 1) {
+    items.forEach((text) => {
+      const s = document.createElement("span");
+      s.textContent = text;
+      track.appendChild(s);
+    });
+  }
+}
+
+// Titulo del hero: palabras enteras (para que el quiebre de linea se
+// conserve) con letras individuales que suben en cascada.
+function splitHeroTitle(text) {
+  const h = document.getElementById("heroTitle");
+  h.replaceChildren();
+  h.setAttribute("aria-label", text);
+  let charIndex = 0;
+  text.split(" ").forEach((word, wi, arr) => {
+    const w = document.createElement("span");
+    w.className = "tw";
+    w.setAttribute("aria-hidden", "true");
+    [...word].forEach((ch) => {
+      const c = document.createElement("span");
+      c.className = "tc";
+      c.style.setProperty("--i", charIndex);
+      c.textContent = ch;
+      w.appendChild(c);
+      charIndex += 1;
+    });
+    h.appendChild(w);
+    if (wi < arr.length - 1) {
+      h.appendChild(document.createTextNode(" "));
+    }
+  });
+}
+
+// Decode estilo terminal: glifos aleatorios que se asientan de
+// izquierda a derecha hasta formar el texto real.
+const scrambleGlyphs = "▓▒░<>/[]{}=+*#";
+
+function scrambleIn(el) {
+  const finalText = el.textContent;
+  const gen = landingFxGen;
+  if (!finalText || reducedMotion.matches) {
+    return;
+  }
+  const started = performance.now();
+  const duration = 620;
+  const step = (now) => {
+    if (gen !== landingFxGen) {
+      return;
+    }
+    const t = Math.min(1, (now - started) / duration);
+    const settled = Math.floor(finalText.length * t);
+    let out = finalText.slice(0, settled);
+    for (let i = settled; i < finalText.length; i += 1) {
+      out += finalText[i] === " " ? " " : scrambleGlyphs[(Math.random() * scrambleGlyphs.length) | 0];
+    }
+    el.textContent = out;
+    if (t < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+  requestAnimationFrame(step);
+}
+
+// Cada seccion revela sus hijos una sola vez al entrar en vista y
+// decodifica su kicker; despues se deja de observar.
+const sectionFxObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) {
+      return;
+    }
+    entry.target.classList.add("is-inview");
+    const kicker = entry.target.querySelector(".section-index span:last-child");
+    if (kicker) {
+      scrambleIn(kicker);
+    }
+    sectionFxObserver.unobserve(entry.target);
+  });
+}, { threshold: 0.15 });
+
+// CTAs magneticos: el boton se inclina hacia el cursor (solo puntero
+// fino y sin reduccion de movimiento).
+function initMagneticButtons() {
+  if (!finePointer.matches || reducedMotion.matches) {
+    return;
+  }
+  document.querySelectorAll(".landing .t-btn, .landing-side-cta").forEach((btn) => {
+    btn.addEventListener("pointermove", (event) => {
+      const rect = btn.getBoundingClientRect();
+      const dx = event.clientX - (rect.left + rect.width / 2);
+      const dy = event.clientY - (rect.top + rect.height / 2);
+      btn.style.transform = `translate(${(dx * 0.14).toFixed(1)}px, ${(dy * 0.22).toFixed(1)}px)`;
+    });
+    btn.addEventListener("pointerleave", () => {
+      btn.style.transform = "";
+    });
   });
 }
 
@@ -1569,7 +1753,11 @@ function fillList(id, items) {
 //   la escala usa resorte; la posicion sigue el cursor 1:1, sin delay).
 // ==================================================================
 const cursorDot = document.getElementById("cursorDot");
+const cursorLock = document.getElementById("cursorLock");
 const heroSection = document.getElementById("l-hero");
+const navProgressEl = document.getElementById("navProgress");
+const hudRailEl = document.getElementById("hudRail");
+const shaderWrap = document.getElementById("shaderHeroRoot");
 
 const cursorSpring = {
   x: -100, y: -100,
@@ -1578,6 +1766,10 @@ const cursorSpring = {
   opacity: 0, targetOpacity: 0
 };
 
+// target-lock: cuatro corchetes que vuelan a encerrar el elemento
+// interactivo bajo el cursor (la reticula queda al centro).
+const lockState = { x: 0, y: 0, w: 0, h: 0, o: 0, target: null };
+
 landing.addEventListener("pointermove", (event) => {
   cursorSpring.targetX = event.clientX;
   cursorSpring.targetY = event.clientY;
@@ -1585,10 +1777,21 @@ landing.addEventListener("pointermove", (event) => {
 });
 landing.addEventListener("pointerleave", () => {
   cursorSpring.targetOpacity = 0;
+  lockState.target = null;
 });
 landing.addEventListener("pointerover", (event) => {
   const interactive = event.target.closest("a, button");
-  cursorSpring.targetScale = interactive ? 2.4 : 1;
+  let lock = null;
+  if (interactive) {
+    const rect = interactive.getBoundingClientRect();
+    // objetivos demasiado grandes (headers de acordeon, paneles) no
+    // se encierran: el punto solo crece, como antes
+    if (rect.width <= 520 && rect.height <= 220) {
+      lock = interactive;
+    }
+  }
+  lockState.target = lock;
+  cursorSpring.targetScale = lock ? 0.55 : interactive ? 2.4 : 1;
 });
 
 function viewProgress(rect, vh) {
@@ -1625,6 +1828,37 @@ function updateScrollFx() {
       landingFx.expPath.style.strokeDashoffset = String(landingFx.expPathLen * (1 - visible));
     }
   }
+
+  // progreso global de scroll: barra bajo la nav + HUD de cuenta regresiva
+  const maxScroll = landing.scrollHeight - landing.clientHeight;
+  const scrollProgress = maxScroll > 0 ? landing.scrollTop / maxScroll : 0;
+  if (navProgressEl) {
+    navProgressEl.style.width = `${(scrollProgress * 100).toFixed(2)}%`;
+  }
+  landing.classList.toggle("is-scrolled", landing.scrollTop > 60);
+
+  let activeSectionId = "";
+  landingSections.forEach((section) => {
+    if (section.getBoundingClientRect().top <= vh * 0.45) {
+      activeSectionId = section.id;
+    }
+  });
+  hudMarks.forEach((mark) => {
+    mark.classList.toggle("is-active", mark.dataset.section === activeSectionId);
+  });
+  if (hudRailEl) {
+    hudRailEl.classList.toggle("is-armed", activeSectionId === "l-contact");
+  }
+
+  // nebulosa: parallax + deriva de tono mientras el hero sale de vista
+  if (shaderWrap && !reducedMotion.matches) {
+    const heroRect = heroSection.getBoundingClientRect();
+    if (heroRect.bottom > 0) {
+      const heroProgress = Math.min(1, Math.max(0, -heroRect.top / Math.max(1, heroRect.height)));
+      shaderWrap.style.transform = `translateY(${(landing.scrollTop * 0.35).toFixed(1)}px)`;
+      shaderWrap.style.filter = `hue-rotate(${(heroProgress * 50).toFixed(1)}deg)`;
+    }
+  }
 }
 
 let lastFxTime = 0;
@@ -1647,10 +1881,40 @@ function landingFxLoop(time) {
     cursorSpring.opacity += (cursorSpring.targetOpacity - cursorSpring.opacity) * Math.min(1, dt * 14);
     cursorDot.style.transform = `translate(${cursorSpring.x - 11}px, ${cursorSpring.y - 11}px) scale(${cursorSpring.scale.toFixed(3)})`;
     cursorDot.style.opacity = cursorSpring.opacity.toFixed(3);
+
+    // los corchetes persiguen el objetivo fijado; sin objetivo, se
+    // repliegan hacia la reticula y se desvanecen
+    const target = lockState.target;
+    if (target && target.isConnected) {
+      const rect = target.getBoundingClientRect();
+      const pad = 7;
+      const k = Math.min(1, dt * 13);
+      lockState.x += (rect.left - pad - lockState.x) * k;
+      lockState.y += (rect.top - pad - lockState.y) * k;
+      lockState.w += (rect.width + pad * 2 - lockState.w) * k;
+      lockState.h += (rect.height + pad * 2 - lockState.h) * k;
+      lockState.o += (1 - lockState.o) * k;
+    } else {
+      lockState.target = null;
+      const k = Math.min(1, dt * 10);
+      lockState.x += (cursorSpring.x - lockState.w / 2 - lockState.x) * k;
+      lockState.y += (cursorSpring.y - lockState.h / 2 - lockState.y) * k;
+      lockState.w += (0 - lockState.w) * k;
+      lockState.h += (0 - lockState.h) * k;
+      lockState.o += (0 - lockState.o) * k;
+    }
+    if (cursorLock) {
+      cursorLock.style.transform = `translate(${lockState.x.toFixed(1)}px, ${lockState.y.toFixed(1)}px)`;
+      cursorLock.style.width = `${Math.max(0, lockState.w).toFixed(1)}px`;
+      cursorLock.style.height = `${Math.max(0, lockState.h).toFixed(1)}px`;
+      cursorLock.style.opacity = lockState.o.toFixed(3);
+    }
   }
 }
 
 function initLandingFx() {
+  landingSections.forEach((section) => sectionFxObserver.observe(section));
+  initMagneticButtons();
   requestAnimationFrame(landingFxLoop);
 }
 
@@ -2517,6 +2781,7 @@ themeToggle.addEventListener("click", () => {
 landingEnterGame.addEventListener("click", () => startGame());
 document.getElementById("heroCtaGameOuter").addEventListener("click", () => startGame());
 document.getElementById("contactGameBtn").addEventListener("click", () => startGame());
+document.getElementById("footerLaunchBtn").addEventListener("click", () => startGame());
 scrollButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     event.preventDefault();

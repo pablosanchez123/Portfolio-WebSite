@@ -13,6 +13,7 @@
   <body>
     <div class="landing" id="landing">
       <span class="cursor-dot" id="cursorDot" aria-hidden="true"></span>
+      <span class="cursor-lock" id="cursorLock" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
 
       <nav class="landing-nav" aria-label="Navegacion del portafolio">
         <a class="landing-brand" href="#l-hero" data-scroll="l-hero">PS.</a>
@@ -40,7 +41,10 @@
             <button type="button" data-lang="en" aria-pressed="false">EN</button>
           </div>
         </div>
+        <span class="nav-progress" id="navProgress" aria-hidden="true"></span>
       </nav>
+
+      <nav class="hud-rail" id="hudRail" aria-label="Progreso del portafolio"></nav>
 
       <div class="side-cta-wrap" id="sideCtaWrap">
         <button class="landing-side-cta" id="landingEnterGame" type="button">
@@ -87,6 +91,10 @@
           <p class="acc-hint" id="projectsHint">toca cada proyecto para abrirlo</p>
           <div class="bouncy-accordion" id="projectsAccordion"></div>
         </section>
+
+        <div class="lp-marquee" aria-hidden="true">
+          <div class="lp-marquee-track" id="marqueeTrack"></div>
+        </div>
 
         <section class="landing-section" id="l-experience">
           <p class="section-index"><span id="experienceIdx">[03]</span> <span id="experienceKicker">Experiencia</span></p>
@@ -136,6 +144,10 @@
       </main>
 
       <footer class="landing-footer">
+        <div class="footer-launch" id="footerLaunch">
+          <p class="footer-launch-status"><span id="footerLaunchStatus">// SECUENCIA DE LANZAMIENTO COMPLETA</span></p>
+          <button type="button" class="t-btn t-btn-primary" id="footerLaunchBtn"><span class="t-btn-inner" id="footerLaunchLabel">Entrar al juego</span></button>
+        </div>
         <p id="landingFooterText">&copy; 2026 Pablo Sanchez Abarca</p>
       </footer>
     </div>
