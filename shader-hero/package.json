@@ -1,0 +1,23 @@
+{
+  "name": "shader-hero",
+  "private": true,
+  "version": "1.0.0",
+  "description": "React island: animated ShaderGradient background for the portfolio hero section.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^8.17.10",
+    "@shadergradient/react": "^2.2.6",
+    "camera-controls": "^2.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.169.0",
+    "three-stdlib": "^2.34.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

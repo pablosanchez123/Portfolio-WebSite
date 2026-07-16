@@ -1645,7 +1645,7 @@ function landingFxLoop(time) {
     cursorSpring.y = cursorSpring.targetY;
     cursorSpring.scale += (cursorSpring.targetScale - cursorSpring.scale) * Math.min(1, dt * 16);
     cursorSpring.opacity += (cursorSpring.targetOpacity - cursorSpring.opacity) * Math.min(1, dt * 14);
-    cursorDot.style.transform = `translate(${cursorSpring.x - 9}px, ${cursorSpring.y - 9}px) scale(${cursorSpring.scale.toFixed(3)})`;
+    cursorDot.style.transform = `translate(${cursorSpring.x - 11}px, ${cursorSpring.y - 11}px) scale(${cursorSpring.scale.toFixed(3)})`;
     cursorDot.style.opacity = cursorSpring.opacity.toFixed(3);
   }
 }

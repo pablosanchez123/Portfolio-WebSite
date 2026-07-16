@@ -6,3 +6,6 @@
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# shader-hero (React island): dist/ se commitea, node_modules no
+shader-hero/node_modules/

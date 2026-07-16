@@ -31,14 +31,34 @@ Pensado para que reclutadores y visitantes conozcan mi trabajo de forma interact
 
 - HTML5 + CSS3
 - JavaScript (Canvas 2D, sin dependencias ni frameworks)
+- Fondo animado del hero: [ShaderGradient](https://www.shadergradient.co/) (React +
+  react-three-fiber + three.js), montado como "isla" en `shader-hero/` — ver detalle abajo.
 - Integración opcional con [Ollama](https://ollama.com/) para el chatbot local
 
 ## 🚀 Uso
 
-No requiere instalación ni build. Abre `index.html` en el navegador.
+No requiere instalación ni build. Abre `index.html` en el navegador — el bundle del
+fondo shader ya viene compilado en `shader-hero/dist/`.
 
 Para probar el chatbot del "Sol de Proyectos" necesitas tener Ollama corriendo
 localmente (por defecto `http://localhost:11434` con el modelo `llama3.2:3b`).
+
+### Editar el fondo animado del hero (shader-hero/)
+
+Esa parte sí usa React + Vite (el resto del sitio sigue siendo vanilla). Para modificar
+los props del gradiente (colores, velocidad, tipo de malla, cámara) o actualizar
+dependencias:
+
+```bash
+cd shader-hero
+npm install
+npm run dev     # entorno de desarrollo
+npm run build   # regenera shader-hero/dist/shader-hero.js (hay que commitearlo)
+```
+
+El componente vive en `shader-hero/src/HeroShader.jsx` y se monta en `#shaderHeroRoot`
+dentro del hero (`index.html`). `index.html` carga el bundle de forma diferida (después
+del evento `load`) para no competir con el resto de recursos de la página.
 
 ## 📫 Contacto
 
