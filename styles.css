@@ -1893,6 +1893,13 @@ a:focus-visible .roll .roll-b span,
   justify-content: flex-start;
   gap: 6px;
   margin-top: 26px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.hover-expand::-webkit-scrollbar {
+  display: none;
 }
 
 .he-panel {
@@ -2521,13 +2528,7 @@ a:focus-visible .roll .roll-b span,
 
   .hover-expand {
     gap: 5px;
-    overflow-x: auto;
     padding-bottom: 10px;
-    scrollbar-width: none;
-  }
-
-  .hover-expand::-webkit-scrollbar {
-    display: none;
   }
 
   .he-panel {

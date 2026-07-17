@@ -329,9 +329,13 @@ const translations = {
           { name: "Troubleshooting", desc: "Diagnostico rapido de fallas y causas raiz." },
           { name: "SQL", desc: "Consultas, reportes y mantenimiento de datos." },
           { name: "Databases", desc: "PostgreSQL en produccion, backups y accesos." },
+          { name: "Cloud Computing", desc: "Despliegue y migracion en AWS y Oracle Cloud." },
+          { name: "API REST", desc: "Diseno, consumo e integracion de APIs REST." },
+          { name: "IA Local", desc: "Modelos de IA locales (Ollama) aplicados a sistemas reales." },
           { name: "OOP", desc: "Bases solidas de programacion orientada a objetos." },
           { name: "Fast Learner", desc: "Adopto herramientas nuevas en dias, no meses." },
-          { name: "Teamwork", desc: "Comunicacion clara con equipos y clientes." }
+          { name: "Teamwork", desc: "Comunicacion clara con equipos y clientes." },
+          { name: "Comunicacion Asertiva", desc: "Mensajes claros y directos con usuarios y equipos." }
         ]
       },
       education: {
@@ -488,9 +492,13 @@ const translations = {
             <span>Troubleshooting</span>
             <span>SQL</span>
             <span>Database Management</span>
+            <span>Cloud Computing (AWS / Oracle Cloud)</span>
+            <span>API REST</span>
+            <span>IA Local (Ollama)</span>
             <span>OOP Fundamentals</span>
             <span>Fast Learner</span>
             <span>Teamwork</span>
+            <span>Comunicacion Asertiva</span>
           </div>
         `
       },
@@ -647,9 +655,13 @@ const translations = {
           { name: "Troubleshooting", desc: "Fast diagnosis of failures and root causes." },
           { name: "SQL", desc: "Queries, reports, and data maintenance." },
           { name: "Databases", desc: "PostgreSQL in production, backups, and access." },
+          { name: "Cloud Computing", desc: "Deployment and migration on AWS and Oracle Cloud." },
+          { name: "REST APIs", desc: "Designing, consuming, and integrating REST APIs." },
+          { name: "Local AI", desc: "Local AI models (Ollama) applied to real systems." },
           { name: "OOP", desc: "Solid object-oriented programming fundamentals." },
           { name: "Fast Learner", desc: "I pick up new tools in days, not months." },
-          { name: "Teamwork", desc: "Clear communication with teams and clients." }
+          { name: "Teamwork", desc: "Clear communication with teams and clients." },
+          { name: "Assertive Communication", desc: "Clear, direct messaging with users and teams." }
         ]
       },
       education: {
@@ -806,9 +818,13 @@ const translations = {
             <span>Troubleshooting</span>
             <span>SQL</span>
             <span>Database Management</span>
+            <span>Cloud Computing (AWS / Oracle Cloud)</span>
+            <span>REST APIs</span>
+            <span>Local AI (Ollama)</span>
             <span>OOP Fundamentals</span>
             <span>Fast Learner</span>
             <span>Teamwork</span>
+            <span>Assertive Communication</span>
           </div>
         `
       },
