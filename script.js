@@ -5,6 +5,7 @@ const gameShell = document.getElementById("gameShell");
 const gameWindow = document.getElementById("gameWindow");
 const gameVeil = document.getElementById("gameVeil");
 const gameWindowStatus = document.getElementById("gameWindowStatus");
+const gameControlsHint = document.getElementById("gameControlsHint");
 const landingEnterGame = document.getElementById("landingEnterGame");
 const heroCtaGame = document.getElementById("heroCtaGame");
 const scrollButtons = [...document.querySelectorAll("[data-scroll]")];
@@ -245,7 +246,10 @@ const translations = {
         windowTitle: "SPACE_PORTFOLIO.exe",
         veilLabel: "Click o toca para tomar el control",
         statusIdle: "en espera",
-        statusActive: "activo"
+        statusActive: "activo",
+        controlsMove: "mover",
+        controlsInteract: "interactuar",
+        controlsFire: "disparar"
       },
       sideCta: "Entrar al juego",
       sideNote: "el portafolio jugable",
@@ -560,7 +564,10 @@ const translations = {
         windowTitle: "SPACE_PORTFOLIO.exe",
         veilLabel: "Click or tap to take control",
         statusIdle: "standing by",
-        statusActive: "active"
+        statusActive: "active",
+        controlsMove: "move",
+        controlsInteract: "interact",
+        controlsFire: "shoot"
       },
       sideCta: "Enter the game",
       sideNote: "the playable portfolio",
@@ -1360,6 +1367,9 @@ function renderLanding(L) {
   document.getElementById("gameHint").textContent = L.game.hint;
   document.getElementById("gameWindowTitle").textContent = L.game.windowTitle;
   document.getElementById("gameVeilLabel").textContent = L.game.veilLabel;
+  document.getElementById("gcHintMove").textContent = L.game.controlsMove;
+  document.getElementById("gcHintInteract").textContent = L.game.controlsInteract;
+  document.getElementById("gcHintFire").textContent = L.game.controlsFire;
   state.gameStatusActive = L.game.statusActive;
   if (gameWindowStatus) {
     gameWindowStatus.textContent = state.started ? L.game.statusActive : L.game.statusIdle;
@@ -1983,6 +1993,22 @@ function startGame() {
   }
 }
 
+let gameHintTimer = 0;
+
+// aviso breve de controles (WASD/flechas, E, Z): aparece al tomar el
+// control y se apaga solo; en tactil no aplica, ahi ya estan el dpad
+// y los botones E/Z a la vista.
+function showControlsHint() {
+  if (!gameControlsHint || !finePointer.matches) {
+    return;
+  }
+  window.clearTimeout(gameHintTimer);
+  gameControlsHint.classList.add("is-visible");
+  gameHintTimer = window.setTimeout(() => {
+    gameControlsHint.classList.remove("is-visible");
+  }, 3200);
+}
+
 function focusGame() {
   if (!state.started) {
     startGame();
@@ -1994,6 +2020,7 @@ function focusGame() {
   if (gameWindow) {
     gameWindow.classList.add("is-focused");
   }
+  showControlsHint();
 }
 
 function blurGame() {
@@ -2008,6 +2035,10 @@ function blurGame() {
     input[key] = false;
   });
   combat.firing = false;
+  window.clearTimeout(gameHintTimer);
+  if (gameControlsHint) {
+    gameControlsHint.classList.remove("is-visible");
+  }
 }
 
 function goToGame(options = {}) {

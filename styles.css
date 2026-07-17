@@ -110,6 +110,49 @@ button {
   background: #000000;
 }
 
+/* aviso breve de controles: aparece al tomar el control, se apaga solo */
+.game-controls-hint {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 6;
+  transform: translateX(-50%) translateY(-6px);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.game-controls-hint.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.game-controls-hint span {
+  padding: 5px 9px;
+  border: 1px solid var(--stroke);
+  background: rgba(7, 3, 14, 0.78);
+  backdrop-filter: blur(6px);
+  color: var(--muted);
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.game-controls-hint b {
+  color: var(--cyan);
+}
+
+@media (max-width: 760px) {
+  .game-controls-hint {
+    display: none;
+  }
+}
+
 .game-window-veil {
   position: absolute;
   inset: 0;
