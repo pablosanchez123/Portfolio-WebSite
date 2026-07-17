@@ -128,6 +128,11 @@ const planets = [
         <li>Gestion y monitoreo de sistemas CCTV.</li>
         <li>Resolucion de errores en aplicaciones de camaras.</li>
       </ul>
+      <p><strong>Project Manager / Cloud Architect</strong> · Aplicacion empresarial, equipo de 3, 4 meses</p>
+      <ul>
+        <li>Lidere como PM un equipo de 3 personas en el desarrollo de una aplicacion empresarial.</li>
+        <li>Rol de Cloud Architect: a cargo de toda la infraestructura cloud del proyecto.</li>
+      </ul>
     `
   },
   {
@@ -311,13 +316,26 @@ const translations = {
       },
       experience: {
         kicker: "Experiencia",
-        giant: "IT SUPPORT",
-        meta: "Sistemas Integrados de Seguridad · 2022 - 2025",
         items: [
-          "Diagnostico y resolucion de problemas en computadoras.",
-          "Gestion y monitoreo de sistemas CCTV.",
-          "Resolucion de errores en aplicaciones de camaras.",
-          "Emergencias tecnologicas en cualquier horario."
+          {
+            giant: "IT SUPPORT",
+            meta: "Sistemas Integrados de Seguridad · 2022 - 2025",
+            list: [
+              "Diagnostico y resolucion de problemas en computadoras.",
+              "Gestion y monitoreo de sistemas CCTV.",
+              "Resolucion de errores en aplicaciones de camaras.",
+              "Emergencias tecnologicas en cualquier horario."
+            ]
+          },
+          {
+            giant: "PM & CLOUD",
+            meta: "Aplicacion empresarial · Equipo de 3 · 4 meses",
+            list: [
+              "Lidere como Project Manager un equipo de 3 personas en el desarrollo de una aplicacion empresarial.",
+              "Asumi tambien el rol de Cloud Architect, a cargo de toda la infraestructura cloud del proyecto.",
+              "Planificacion, seguimiento y coordinacion del equipo durante los 4 meses del proyecto."
+            ]
+          }
         ]
       },
       skills: {
@@ -480,6 +498,11 @@ const translations = {
             <li>Gestion y monitoreo de sistemas CCTV.</li>
             <li>Resolucion de errores en aplicaciones de camaras.</li>
           </ul>
+          <p><strong>Project Manager / Cloud Architect</strong> · Aplicacion empresarial, equipo de 3, 4 meses</p>
+          <ul>
+            <li>Lidere como PM un equipo de 3 personas en el desarrollo de una aplicacion empresarial.</li>
+            <li>Rol de Cloud Architect: a cargo de toda la infraestructura cloud del proyecto.</li>
+          </ul>
         `
       },
       skills: {
@@ -637,13 +660,26 @@ const translations = {
       },
       experience: {
         kicker: "Experience",
-        giant: "IT SUPPORT",
-        meta: "Sistemas Integrados de Seguridad · 2022 - 2025",
         items: [
-          "Diagnosed and solved computer issues.",
-          "Managed and monitored CCTV systems.",
-          "Resolved errors in camera applications.",
-          "Handled tech emergencies on any schedule."
+          {
+            giant: "IT SUPPORT",
+            meta: "Integrated Security Systems · 2022 - 2025",
+            list: [
+              "Diagnosed and solved computer issues.",
+              "Managed and monitored CCTV systems.",
+              "Resolved errors in camera applications.",
+              "Handled tech emergencies on any schedule."
+            ]
+          },
+          {
+            giant: "PM & CLOUD",
+            meta: "Enterprise application · Team of 3 · 4 months",
+            list: [
+              "Led a 3-person team as Project Manager building an enterprise application.",
+              "Also took on the Cloud Architect role, owning the project's cloud infrastructure.",
+              "Planned, tracked, and coordinated the team over the project's 4 months."
+            ]
+          }
         ]
       },
       skills: {
@@ -799,12 +835,17 @@ const translations = {
       experience: {
         label: "Experience",
         title: "IT Support Technician",
-        kicker: "Sistemas Integrados de Seguridad / 2022-2025",
+        kicker: "Integrated Security Systems / 2022-2025",
         html: `
           <ul>
             <li>Diagnosed and solved computer issues.</li>
             <li>Managed and monitored CCTV systems.</li>
             <li>Resolved errors in camera applications.</li>
+          </ul>
+          <p><strong>Project Manager / Cloud Architect</strong> · Enterprise application, team of 3, 4 months</p>
+          <ul>
+            <li>Led a 3-person team as PM building an enterprise application.</li>
+            <li>Cloud Architect role: owned the project's entire cloud infrastructure.</li>
           </ul>
         `
       },
@@ -1514,9 +1555,32 @@ function renderLanding(L) {
 
   // Experiencia: LinePath (skiper19) + bloque de texto gigante
   document.getElementById("experienceKicker").textContent = L.experience.kicker;
-  document.getElementById("experienceTitle").replaceChildren(makeRoll(L.experience.giant));
-  document.getElementById("experienceMeta").textContent = L.experience.meta;
-  fillList("experienceList", L.experience.items);
+  const experienceBlocks = document.getElementById("experienceBlocks");
+  experienceBlocks.replaceChildren();
+  L.experience.items.forEach((role, i) => {
+    const block = document.createElement("div");
+    block.className = "exp-block";
+    block.style.setProperty("--i", i);
+
+    const giant = document.createElement("h2");
+    giant.className = "exp-giant roll-trigger";
+    giant.appendChild(makeRoll(role.giant));
+
+    const meta = document.createElement("p");
+    meta.className = "exp-meta";
+    meta.textContent = role.meta;
+
+    const list = document.createElement("ul");
+    list.className = "exp-list";
+    role.list.forEach((text) => {
+      const li = document.createElement("li");
+      li.textContent = text;
+      list.appendChild(li);
+    });
+
+    block.append(giant, meta, list);
+    experienceBlocks.appendChild(block);
+  });
   landingFx.expSection = document.getElementById("l-experience");
   landingFx.expPath = document.getElementById("expLinePath");
   if (landingFx.expPath && !landingFx.expPathLen) {
@@ -1651,18 +1715,6 @@ function renderLanding(L) {
   document.getElementById("footerLaunchLabel").textContent = L.contact.gameBtn;
   renderMarquee(L);
   renderHudRail(L);
-}
-
-function fillList(id, items) {
-  const list = document.getElementById(id);
-  list.replaceChildren();
-  items.forEach((text, i) => {
-    const li = document.createElement("li");
-    li.className = "fx-rise";
-    li.style.setProperty("--i", i);
-    li.textContent = text;
-    list.appendChild(li);
-  });
 }
 
 // ==================================================================
