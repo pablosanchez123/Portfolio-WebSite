@@ -1,12 +1,16 @@
 # Portafolio Interactivo — Pablo Sanchez Abarca
 
-Sitio web de portafolio personal y profesional con formato de **minijuego espacial**.
-En lugar de secciones estáticas, navegas por el espacio con una nave y visitas
-planetas que contienen mi información (perfil, experiencia, proyectos, etc.).
-Pensado para que reclutadores y visitantes conozcan mi trabajo de forma interactiva.
+Sitio de portafolio con un landing scrolleable (estilo secuencia de pre-lanzamiento)
+que incluye, embebido en su propia sección, un **minijuego espacial** jugable: una
+ventana tipo consola donde te movés con una nave y visitás planetas que contienen mi
+información (perfil, experiencia, proyectos, etc.). No es una vista aparte — vive en
+medio del home, entre el hero y el resto de secciones.
 
 ## ✨ Características
 
+- **Ventana de juego embebida**: sección `[01] Juego` justo después del hero. Click o
+  toque para tomar el control; el teclado solo mueve la nave mientras la ventana está
+  enfocada, así no interfiere con el scroll normal de la página.
 - **Navegación espacial**: muévete con `WASD` o las flechas del teclado.
 - **Planetas de información**: cada planeta es una sección (Perfil, Experiencia,
   Proyectos, Habilidades, Educación, Certificaciones, Contacto). Acércate y presiona

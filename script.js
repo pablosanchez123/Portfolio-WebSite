@@ -1,6 +1,10 @@
 const canvas = document.getElementById("spaceCanvas");
 const ctx = canvas.getContext("2d");
 const landing = document.getElementById("landing");
+const gameShell = document.getElementById("gameShell");
+const gameWindow = document.getElementById("gameWindow");
+const gameVeil = document.getElementById("gameVeil");
+const gameWindowStatus = document.getElementById("gameWindowStatus");
 const landingEnterGame = document.getElementById("landingEnterGame");
 const heroCtaGame = document.getElementById("heroCtaGame");
 const scrollButtons = [...document.querySelectorAll("[data-scroll]")];
@@ -40,15 +44,17 @@ const player = {
 const camera = { x: 0, y: 0 };
 const input = { up: false, down: false, left: false, right: false };
 const state = {
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 960,
+  height: 540,
   dpr: Math.max(1, Math.min(window.devicePixelRatio || 1, 2)),
   started: false,
+  focused: false,
   lastTime: 0,
   lang: "es",
   nearest: null,
   openPlanetId: null,
-  pulse: 0
+  pulse: 0,
+  gameStatusActive: "activo"
 };
 
 const projectChat = {
@@ -208,6 +214,7 @@ const translations = {
     metaDescription: "Portafolio de proyectos interactivo de Pablo Sanchez Abarca, Systems Engineer e IT Support Technician.",
     landing: {
       nav: {
+        game: "Juego",
         profile: "Perfil",
         projects: "Proyectos",
         experience: "Experiencia",
@@ -230,6 +237,15 @@ const translations = {
         ctaGame: "Entrar al juego",
         badges: ["React", "FastAPI", "PostgreSQL", "Ollama", "Electron", "AWS"],
         scrollHint: "scroll"
+      },
+      game: {
+        kicker: "Juego",
+        title: "Portafolio jugable",
+        hint: "click o toca la ventana para tomar el control",
+        windowTitle: "SPACE_PORTFOLIO.exe",
+        veilLabel: "Click o toca para tomar el control",
+        statusIdle: "en espera",
+        statusActive: "activo"
       },
       sideCta: "Entrar al juego",
       sideNote: "el portafolio jugable",
@@ -513,6 +529,7 @@ const translations = {
     metaDescription: "Interactive project portfolio for Pablo Sanchez Abarca, Systems Engineer and IT Support Technician.",
     landing: {
       nav: {
+        game: "Game",
         profile: "Profile",
         projects: "Projects",
         experience: "Experience",
@@ -535,6 +552,15 @@ const translations = {
         ctaGame: "Enter the game",
         badges: ["React", "FastAPI", "PostgreSQL", "Ollama", "Electron", "AWS"],
         scrollHint: "scroll"
+      },
+      game: {
+        kicker: "Game",
+        title: "Playable portfolio",
+        hint: "click or tap the window to take control",
+        windowTitle: "SPACE_PORTFOLIO.exe",
+        veilLabel: "Click or tap to take control",
+        statusIdle: "standing by",
+        statusActive: "active"
       },
       sideCta: "Enter the game",
       sideNote: "the playable portfolio",
@@ -1329,6 +1355,16 @@ function renderLanding(L) {
   document.getElementById("sideCtaNote").textContent = L.sideNote;
   startTypewriter(L.hero.typeBase, L.hero.typePhrases);
 
+  document.getElementById("gameKicker").textContent = L.game.kicker;
+  document.getElementById("gameTitle").textContent = L.game.title;
+  document.getElementById("gameHint").textContent = L.game.hint;
+  document.getElementById("gameWindowTitle").textContent = L.game.windowTitle;
+  document.getElementById("gameVeilLabel").textContent = L.game.veilLabel;
+  state.gameStatusActive = L.game.statusActive;
+  if (gameWindowStatus) {
+    gameWindowStatus.textContent = state.started ? L.game.statusActive : L.game.statusIdle;
+  }
+
   const badges = document.getElementById("heroBadges");
   badges.replaceChildren();
   L.hero.badges.forEach((name) => {
@@ -1608,7 +1644,7 @@ function fillList(id, items) {
 // HUD lateral T-07 -> T-01, decode de kickers al entrar en vista,
 // titulo del hero letra a letra y marquee divisor.
 // ==================================================================
-const hudSectionIds = ["l-profile", "l-projects", "l-experience", "l-skills", "l-education", "l-certs", "l-contact"];
+const hudSectionIds = ["l-game", "l-profile", "l-projects", "l-experience", "l-skills", "l-education", "l-certs", "l-contact"];
 let hudMarks = [];
 let landingFxGen = 0;
 
@@ -1864,9 +1900,6 @@ function updateScrollFx() {
 let lastFxTime = 0;
 
 function landingFxLoop(time) {
-  if (state.started) {
-    return;
-  }
   requestAnimationFrame(landingFxLoop);
   const dt = Math.min(0.05, (time - lastFxTime) / 1000 || 0.016);
   lastFxTime = time;
@@ -1919,8 +1952,9 @@ function initLandingFx() {
 }
 
 function resizeCanvas() {
-  state.width = window.innerWidth;
-  state.height = window.innerHeight;
+  const rect = gameShell.getBoundingClientRect();
+  state.width = Math.max(1, Math.round(rect.width));
+  state.height = Math.max(1, Math.round(rect.height));
   state.dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
   canvas.width = Math.floor(state.width * state.dpr);
   canvas.height = Math.floor(state.height * state.dpr);
@@ -1929,24 +1963,60 @@ function resizeCanvas() {
   ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 }
 
-function startGame(options = {}) {
+// La ventana del juego vive embebida en el home (no fullscreen). Se
+// "activa" al primer click/tap (arranca el loop, oculta el velo) y
+// queda "enfocada" mientras el usuario interactua con ella: solo con
+// foco el teclado mueve la nave, para no pelear con el scroll normal
+// de la pagina.
+function startGame() {
   if (state.started) {
     return;
   }
-  const instant = options.instant === true;
   state.started = true;
-  window.clearTimeout(typer.timer);
-  typer.seq += 1;
-  landing.classList.add("is-hidden");
-  if (instant) {
-    landing.style.display = "none";
-  } else {
-    window.setTimeout(() => {
-      landing.style.display = "none";
-    }, 360);
-  }
   resizeCanvas();
   requestAnimationFrame(loop);
+  if (gameWindow) {
+    gameWindow.classList.add("is-started");
+  }
+  if (gameWindowStatus) {
+    gameWindowStatus.textContent = state.gameStatusActive;
+  }
+}
+
+function focusGame() {
+  if (!state.started) {
+    startGame();
+  }
+  if (state.focused) {
+    return;
+  }
+  state.focused = true;
+  if (gameWindow) {
+    gameWindow.classList.add("is-focused");
+  }
+}
+
+function blurGame() {
+  if (!state.focused) {
+    return;
+  }
+  state.focused = false;
+  if (gameWindow) {
+    gameWindow.classList.remove("is-focused");
+  }
+  Object.keys(input).forEach((key) => {
+    input[key] = false;
+  });
+  combat.firing = false;
+}
+
+function goToGame(options = {}) {
+  const instant = options.instant === true;
+  const section = document.getElementById("l-game");
+  if (section) {
+    section.scrollIntoView({ behavior: instant ? "auto" : "smooth", block: "start" });
+  }
+  focusGame();
 }
 
 function setInput(key, value) {
@@ -2671,8 +2741,9 @@ function flyToPlanet(id) {
 }
 
 function handleCanvasPointer(event) {
-  if (!state.started) {
-    startGame();
+  const wasStarted = state.started;
+  focusGame();
+  if (!wasStarted) {
     return;
   }
   const rect = canvas.getBoundingClientRect();
@@ -2714,7 +2785,7 @@ function loop(time) {
   requestAnimationFrame(loop);
 }
 
-window.addEventListener("resize", resizeCanvas);
+const gameResizeObserver = new ResizeObserver(() => resizeCanvas());
 
 window.addEventListener("keydown", (event) => {
   if (isTypingTarget(event.target)) {
@@ -2725,7 +2796,15 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
-  if (!state.started) {
+  if (event.key === "Escape") {
+    closeInfoPanel();
+    blurGame();
+    return;
+  }
+
+  // sin foco, las teclas no le pertenecen al juego: dejan scrollear
+  // la pagina con flechas/espacio con normalidad
+  if (!state.focused) {
     return;
   }
 
@@ -2734,18 +2813,14 @@ window.addEventListener("keydown", (event) => {
     setInput(keyMap[event.key], true);
   }
 
-  if ((event.key === "e" || event.key === "E" || event.key === " ") && state.started) {
+  if (event.key === "e" || event.key === "E" || event.key === " ") {
     event.preventDefault();
     openPlanet(state.nearest);
   }
 
-  if ((event.key === "z" || event.key === "Z") && state.started) {
+  if (event.key === "z" || event.key === "Z") {
     event.preventDefault();
     combat.firing = true;
-  }
-
-  if (event.key === "Escape") {
-    closeInfoPanel();
   }
 });
 
@@ -2778,10 +2853,18 @@ themeToggle.addEventListener("click", () => {
   );
 });
 
-landingEnterGame.addEventListener("click", () => startGame());
-document.getElementById("heroCtaGameOuter").addEventListener("click", () => startGame());
-document.getElementById("contactGameBtn").addEventListener("click", () => startGame());
-document.getElementById("footerLaunchBtn").addEventListener("click", () => startGame());
+landingEnterGame.addEventListener("click", () => goToGame());
+document.getElementById("heroCtaGameOuter").addEventListener("click", () => goToGame());
+document.getElementById("contactGameBtn").addEventListener("click", () => goToGame());
+document.getElementById("footerLaunchBtn").addEventListener("click", () => goToGame());
+if (gameVeil) {
+  gameVeil.addEventListener("click", () => focusGame());
+}
+document.addEventListener("pointerdown", (event) => {
+  if (state.focused && gameWindow && !gameWindow.contains(event.target)) {
+    blurGame();
+  }
+});
 scrollButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     event.preventDefault();
@@ -2815,7 +2898,7 @@ const stopFiring = (event) => {
 };
 touchFire.addEventListener("pointerdown", (event) => {
   event.preventDefault();
-  startGame();
+  focusGame();
   combat.firing = true;
 });
 touchFire.addEventListener("pointerup", stopFiring);
@@ -2826,7 +2909,7 @@ panelBody.addEventListener("click", handleProjectCardToggle);
 
 radarButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    startGame();
+    focusGame();
     flyToPlanet(button.dataset.planet);
   });
 });
@@ -2838,7 +2921,7 @@ mobileNavButtons.forEach((button) => {
       closeInfoPanel();
       return;
     }
-    startGame();
+    focusGame();
     flyToPlanet(id);
   });
 });
@@ -2847,6 +2930,7 @@ touchButtons.forEach((button) => {
   const direction = button.dataset.touch;
   const start = (event) => {
     event.preventDefault();
+    focusGame();
     setInput(direction, true);
   };
   const end = (event) => {
@@ -2862,10 +2946,11 @@ touchButtons.forEach((button) => {
 const query = new URLSearchParams(window.location.search);
 applyLanguage(query.get("lang") === "en" ? "en" : "es");
 initAsteroids();
+gameResizeObserver.observe(gameShell);
 resizeCanvas();
 draw(0);
 initLandingFx();
 
 if (query.get("play") === "1") {
-  window.setTimeout(() => startGame({ instant: true }), 80);
+  window.setTimeout(() => goToGame({ instant: true }), 80);
 }

@@ -37,13 +37,110 @@ button {
   font: inherit;
 }
 
+/* ---- Ventana del juego embebida en el home (no fullscreen) ---- */
+.game-window {
+  max-width: 1100px;
+  border: 1px solid var(--stroke);
+  background: #000000;
+}
+
+.game-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--stroke);
+  background: rgba(12, 6, 22, 0.9);
+}
+
+.game-window-dots {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.game-window-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--stroke);
+}
+
+.game-window-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.game-window-status {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--stroke);
+  color: var(--muted);
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.game-window.is-focused .game-window-status {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.game-window.is-focused {
+  border-color: var(--cyan);
+}
+
 .game-shell {
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  min-height: 420px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 320px;
+  max-height: 620px;
   overflow: hidden;
   background: #000000;
+}
+
+.game-window-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  background: rgba(5, 2, 10, 0.62);
+  color: var(--text);
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 260ms ease, visibility 260ms ease;
+}
+
+.game-window-veil-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.game-window.is-started .game-window-veil {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 #spaceCanvas {
@@ -102,8 +199,8 @@ button {
   right: 18px;
   bottom: 18px;
   z-index: 7;
-  width: min(440px, calc(100vw - 36px));
-  max-height: min(68vh, 560px);
+  width: min(380px, calc(100% - 36px));
+  max-height: min(72%, 420px);
   overflow: auto;
   padding: 22px;
   border: 2px solid var(--violet);
@@ -128,9 +225,9 @@ button {
   right: auto;
   bottom: auto;
   left: 50%;
-  width: min(1040px, calc(100vw - 36px));
-  height: min(84vh, 760px);
-  max-height: min(84vh, 760px);
+  width: min(94%, 900px);
+  height: min(88%, 560px);
+  max-height: min(88%, 560px);
   overflow: hidden;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
@@ -537,24 +634,33 @@ button {
     display: none;
   }
 
-  /* fixed en vez de absolute: en movil 100vh incluye la zona detras de la
-     barra del navegador, y con absolute el panel quedaba bajo la barra fija */
+  /* ventana mas alta en movil: da lugar al dpad + barra de planetas
+     sin que se pisen con el canvas */
+  .game-shell {
+    aspect-ratio: 3 / 4;
+    min-height: 440px;
+    max-height: 620px;
+  }
+
+  /* absolute (no fixed): el panel queda contenido dentro de la
+     ventana del juego en vez de anclarse a los bordes reales de la
+     pantalla */
   .info-panel {
-    position: fixed;
-    right: 10px;
-    left: 10px;
-    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+    position: absolute;
+    right: 8px;
+    left: 8px;
+    bottom: 78px;
     width: auto;
-    max-height: 48vh;
+    max-height: 42%;
     padding: 18px;
   }
 
   .info-panel.is-project-hub {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
-    left: 10px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    bottom: 78px;
+    left: 8px;
     width: auto;
     height: auto;
     max-height: none;
@@ -602,20 +708,21 @@ button {
   }
 
   .touch-controls {
-    position: fixed;
+    position: absolute;
     display: flex;
-    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+    left: 10px;
+    bottom: 70px;
   }
 
   .mobile-nav {
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 8;
     display: flex;
     gap: 8px;
-    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    padding: 10px 12px;
     overflow-x: auto;
     scrollbar-width: none;
     border-top: 1px solid var(--stroke);
@@ -776,12 +883,6 @@ button {
 
 .landing::-webkit-scrollbar-thumb:hover {
   background: var(--l-purple);
-}
-
-.landing.is-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 /* ---- Cursor: reticula de puntería (spring follow, skiper61) ---- */
